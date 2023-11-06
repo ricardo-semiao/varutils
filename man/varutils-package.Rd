@@ -4,8 +4,8 @@
 \name{varutils-package}
 \alias{varutils}
 \alias{varutils-package}
-\title{varutils: What the Package Does (Title Case)}
+\title{varutils: Utility Functions for VAR Analisys}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Functions for commonly needed ggplot graphs for Vector Auto-Regressive models, like IRF's, FEVD's, predict graphs, and VAR residual analisys. Also contains functions for common tests and statistics, that returns nicely formatted results.
 }
 \keyword{internal}
