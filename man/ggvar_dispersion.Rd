@@ -20,14 +20,14 @@ ggvar_dispersion(
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{A interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
 \item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
 
-\item{palette}{A vector of colors (points, x-axis line)}
+\item{palette}{A vector of colors (points, x-axis line). See `vignette(palettes)`.}
 }
 \value{
-Returns an object of class \code{ggplot}.
+An object of class \code{ggplot}.
 }
 \description{
 Plots a scatterplot of the residuals versus fitted values of a VAR model, using ggplot2.
@@ -35,7 +35,4 @@ Plots a scatterplot of the residuals versus fitted values of a VAR model, using 
 \examples{
 x <- vars::VAR(EuStockMarkets)
 ggvar_dispersion(x)
-}
-\seealso{
-For info on \code{alpha} and \code{colors}: \code{vignette("ggplot2-specs")}.
 }

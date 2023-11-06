@@ -2,16 +2,24 @@
 % Please edit documentation in R/ggvar_fit.R
 \name{ggvar_fit}
 \alias{ggvar_fit}
+\alias{ggvar_fit_colored}
 \title{Plot VAR Fitted Values}
 \usage{
 ggvar_fit(
   x,
-  vars = NULL,
-  date = 1:x$obs,
   compare = TRUE,
+  vars = NULL,
+  dates = 1:x$obs,
+  linetypes = c("solid", "dashed"),
   scales = "fixed",
-  ncol = 1,
-  alpha = 0.5,
+  ncol = 1
+)
+
+ggvar_fit_colored(
+  x,
+  vars = NULL,
+  dates = 1:x$obs,
+  compare = TRUE,
   palette = NULL,
   linetypes = c("solid", "dashed")
 )
@@ -19,25 +27,28 @@ ggvar_fit(
 \arguments{
 \item{x}{A "varest" object to get fitted values from.}
 
+\item{compare}{Logical, should the true values be printed?}
+
 \item{vars}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
-\item{date}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a vector of indexes.}
+\item{dates}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a vector of indexes.}
 
-\item{compare}{Logical, should the true values be printed?}
+\item{linetypes}{A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{A interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
-
-\item{palette}{A vector of colors. Each for a different variable.}
-
-\item{linetypes}{A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
+\item{palette}{A vector of colors. Each for a different variable. See `vignette(palettes)`.}
 }
 \value{
-A ggplot.
+An object of class \code{ggplot}.
 }
 \description{
-Plots fitted values of a VAR model, versus the actual values.
+Plots fitted values of a VAR model, versus the actual values. `ggvar_fit` Plots each series in a facet. `ggvar_fit_colored` plots all in the same graph, each with a different color.
+}
+\examples{
+x <- vars::VAR(EuStockMarkets)
+ggvar_fit(x, dates = stats::time(EuStockMarkets))
+
 }

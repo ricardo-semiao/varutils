@@ -5,13 +5,11 @@
 #' @param x A "varest" object to get residuals and fitted values from.
 #' @param vars A character vector with variables to consider. Defaults to all (\code{NULL}).
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol A interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
+#' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #' @param alpha A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.
-#' @param palette A vector of colors (points, x-axis line)
+#' @param palette A vector of colors (points, x-axis line). See `vignette(palettes)`.
 #'
-#' @return Returns an object of class \code{ggplot}.
-#'
-#' @seealso For info on \code{alpha} and \code{colors}: \code{vignette("ggplot2-specs")}.
+#' @return An object of class \code{ggplot}.
 #'
 #' @export
 #'
@@ -26,7 +24,6 @@ ggvar_dispersion <- function(
     alpha = 0.5,
     palette = c("black", "black")
   ) {
-
   # Initial tests:
   stopifnot(inherits(x, "varest"), inherits(vars, c("character", "NULL")))
   if (ncol %% 1 != 0) {
@@ -46,7 +43,7 @@ ggvar_dispersion <- function(
   palette <- get_pallete(palette)
   vars <- vars %||% names(x$varresult)
 
-  # Getting Residuals and fitted values:
+  # Data - fitted and residuals:
   data <- data.frame(Residuals.. = stats::residuals(x), Fitted.. = stats::fitted(x)) %>%
     dplyr::select(dplyr::ends_with(vars)) %>%
     tidyr::pivot_longer(dplyr::everything(), names_sep = "\\.\\.\\.", names_to = c(".value", "Variable"))
