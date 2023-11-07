@@ -3,7 +3,7 @@
 \name{ggvar_acf}
 \alias{ggvar_acf}
 \alias{ggvar_ccf}
-\title{Plot Autocorrelation (and Similars) of VAR Variables}
+\title{Plot Autocorrelation (and Similars) of Dataset}
 \usage{
 ggvar_acf(
   data,
@@ -14,7 +14,8 @@ ggvar_acf(
   facet = "ggplot",
   palette = c("black", "black", "blue", NA),
   scales = "fixed",
-  ncol = 1
+  ncol = 1,
+  ...
 )
 
 ggvar_ccf(
@@ -26,7 +27,8 @@ ggvar_ccf(
   geom = "segment",
   palette = c("black", "black", "blue", NA),
   scales = "fixed",
-  independent = "y"
+  independent = "y",
+  ...
 )
 }
 \arguments{
@@ -47,6 +49,8 @@ ggvar_ccf(
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
 \item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+
+\item{...}{Aditional arguments passed to the ggplot geom defined by \code{geom}.}
 
 \item{independent}{If scales are able to vary between rows and/or columns. See \link[ggh4x]{facet_grid2}.}
 }

@@ -32,7 +32,6 @@ get_pallete <- function(palette, n, ...) {
       } else if (pkg_pal[1] %in% c("base", "viridis", "ggsci")) { match.fun(palette)(n, ...)[1:n] }
     }
 
-
     else if (is.atomic(palette)) { palette } #vector of colors
 
     else {stop("Unrecognized `palette` argument")}

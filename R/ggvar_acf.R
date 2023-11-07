@@ -8,10 +8,11 @@
 #' @param ci The level of confidence for the ACF confidence interval.
 #' @param geom The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.
 #' @param facet The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.
-#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
 #' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
+#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
 #' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #' @param independent If scales are able to vary between rows and/or columns. See \link[ggh4x]{facet_grid2}.
+#' @param ... Aditional arguments passed to the ggplot geom defined by \code{geom}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -24,7 +25,7 @@ ggvar_acf <- function(
     data, type = "correlation",
     lag.max = NULL, ci = 0.95,
     geom = "segment", facet = "ggplot",
-    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1
+    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, ...
   ){
   # Initial tests:
   stopifnot(inherits(data, c("data.frame", "matrix")))
@@ -42,14 +43,14 @@ ggvar_acf <- function(
 
   ggplot_add <- list(
     if (geom == "area") {
-      ggplot2::geom_area(aes(ymin = 0, ymax = .data$values), fill = palette[1])
+      ggplot2::geom_area(aes(ymin = 0, ymax = .data$values), fill = palette[1], ...)
     } else {
-      ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1])
+      ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)
     }
   )
 
   # Data
-  data_acf <- purrr::map2_dfr(as.list(data), series, function(x, name) {
+  data_acf <- purrr::map2_dfr(as.data.frame(data), series, function(x, name) {
     tibble::tibble(
       serie = name,
       value = stats::acf(x, lag.max = lag.max, type = type, plot = FALSE) %>% purrr::pluck("acf") %>% `[`(,,1),
@@ -71,7 +72,7 @@ ggvar_ccf <- function(
     data, type = "correlation",
     lag.max = NULL, ci = 0.95,
     facet = "ggplot", geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "y"
+    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "y", ...
 ){
   # Initial tests:
   stopifnot(inherits(data, c("data.frame", "matrix")))
@@ -89,9 +90,9 @@ ggvar_ccf <- function(
 
   ggplot_add <- list(
     if (geom == "area") {
-      ggplot2::geom_area(aes(ymin = 0, ymax = .data$value), fill = palette[1])
+      ggplot2::geom_area(aes(ymin = 0, ymax = .data$value), fill = palette[1], ...)
     } else if (geom == "segment") {
-      ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1])
+      ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)
     } else {stop("Invalid `geom` argument.")},
     if (facet == "ggh4x") {
       if (!rlang::is_installed("ggh4x")) {
@@ -110,7 +111,7 @@ ggvar_ccf <- function(
     purrr::pluck("acf") %>%
     purrr::array_tree(3) %>%
     purrr::map2_dfr(vars, ~ data.frame(.y, lag.min:lag.max, .x)) %>%
-    utils::setNames(c("var1", "lag", vars)) %>%
+    stats::setNames(c("var1", "lag", vars)) %>%
     tidyr::pivot_longer(dplyr::all_of(vars), names_to = "var2", values_to = "value")
 
   ggplot(data_acf, aes(.data$lag, .data$value)) +

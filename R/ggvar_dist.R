@@ -5,19 +5,19 @@
 #' @param x A "varest" object.
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
 #' @param bins An interger. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.
-#' @param size An interger. The size of the normal curve line, passed to \link[ggplot2]{geom_line}.
 #' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
+#' @param size An interger. The size of the normal curve line, passed to \link[ggplot2]{geom_line}.
+#' @param ... Aditional arguments passed to \link[ggplot2]{geom_histogram}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' x <- vars::VAR(EuStockMarkets)
-#' ggvar_dist(x)
+#' ggvar_dist(vars::VAR(EuStockMarkets))
 #'
 #' @export
 ggvar_dist = function(
-    x, series = NULL,
-    bins = 30, size = 1, palette = c("grey", "black")
+    x, series = NULL, bins = 30,
+    palette = c("grey", "black"), size = 1, ...
   ) {
   # Initial tests:
   stopifnot(inherits(x, "varest"), inherits(series, c("character", "NULL")))
@@ -39,7 +39,7 @@ ggvar_dist = function(
 
   # Graph:
   ggplot(data_histogram, aes(x = residual)) +
-    ggplot2::geom_histogram(aes(y = ggplot2::after_stat(density)), fill = palette[1], bins = bins) +
+    ggplot2::geom_histogram(aes(y = ggplot2::after_stat(density)), fill = palette[1], bins = bins, ...) +
     ggplot2::geom_line(aes(y = density, color = "Normal curve"), data = data_density, size = size) +
     ggplot2::scale_color_manual(values = palette[2], name = "Legend") +
     ggplot2::facet_wrap(ggplot2::vars(.data$serie), ncol = 1, scales = "free") +

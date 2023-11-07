@@ -7,10 +7,11 @@
 ggvar_dispersion(
   x,
   series = NULL,
+  palette = c("black", "black"),
   scales = "fixed",
   ncol = 1,
   alpha = 0.5,
-  palette = c("black", "black")
+  ...
 )
 }
 \arguments{
@@ -18,13 +19,15 @@ ggvar_dispersion(
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
+\item{palette}{A vector of colors (points, x-axis line). See \code{vignette("palettes")}.}
+
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
 \item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
 \item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
 
-\item{palette}{A vector of colors (points, x-axis line). See \code{vignette("palettes")}.}
+\item{...}{Aditional arguments passed to \link[ggplot2]{geom_point}.}
 }
 \value{
 An object of class \code{ggplot}.
@@ -33,6 +36,5 @@ An object of class \code{ggplot}.
 Plots a scatterplot of the residuals versus fitted values of a VAR model, using ggplot2.
 }
 \examples{
-x <- vars::VAR(EuStockMarkets)
-ggvar_dispersion(x)
+ggvar_dispersion(vars::VAR(EuStockMarkets))
 }

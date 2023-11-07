@@ -10,9 +10,11 @@ ggvar_fit(
   compare = TRUE,
   series = NULL,
   index = 1:x$obs,
+  palette = c("black"),
   linetypes = c("solid", "dashed"),
   scales = "fixed",
-  ncol = 1
+  ncol = 1,
+  ...
 )
 
 ggvar_fit_colored(
@@ -21,7 +23,8 @@ ggvar_fit_colored(
   index = 1:x$obs,
   compare = TRUE,
   palette = NULL,
-  linetypes = c("solid", "dashed")
+  linetypes = c("solid", "dashed"),
+  ...
 )
 }
 \arguments{
@@ -31,7 +34,9 @@ ggvar_fit_colored(
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
-\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a vector of indexes.}
+\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a numeric sequence}
+
+\item{palette}{A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.}
 
 \item{linetypes}{A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
 
@@ -39,7 +44,7 @@ ggvar_fit_colored(
 
 \item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{palette}{A vector of colors. Each for a different variable. See \code{vignette("palettes")}.}
+\item{...}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 }
 \value{
 An object of class \code{ggplot}.
