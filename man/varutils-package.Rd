@@ -6,6 +6,6 @@
 \alias{varutils-package}
 \title{varutils: Utility Functions for VAR Analisys}
 \description{
-Functions for commonly needed ggplot graphs for Vector Auto-Regressive models, like IRF's, FEVD's, predict graphs, and VAR residual analisys. Also contains functions for common tests and statistics, that returns nicely formatted results.
+Functions for commonly needed ggplot graphs for Vector Auto-Regressive models, like IRF's, FEVD's, predict graphs, and VAR residual analisys. Soon to contain functions for common tests and statistics, and other VAR-like objects.
 }
 \keyword{internal}
