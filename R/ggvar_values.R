@@ -28,9 +28,8 @@ ggvar_values <- function(
   # Create values:
   palette <- get_pallete(palette, 1)
 
-  if (inherits(x, c("varest"))) {
+  if (inherits(x, "varest")) {
     title <- "VAR Residuals"
-
     data <- as.data.frame(stats::residuals(x))
   } else {
     title <- "Historic Values"
@@ -49,7 +48,7 @@ ggvar_values <- function(
   ggplot(data_values, aes(.data$index, .data$value)) +
     ggplot2::geom_line(color = palette[1], ...) +
     ggplot2::facet_wrap(ggplot2::vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = title)
+    ggplot2::labs(title = title, x = "Index", y = "Values")
 }
 
 #' @rdname ggvar_values
@@ -57,16 +56,15 @@ ggvar_values <- function(
 ggvar_values_colored <- function(
     x, series = NULL, index = NULL,
     palette = NULL, ...
-){
+  ) {
   # Initial tests:
   stopifnot(inherits(x, c("data.frame", "matrix", "varest")))
 
   # Create values:
   palette <- get_pallete(palette, 1)
 
-  if (inherits(x, c("varest"))) {
+  if (inherits(x, "varest")) {
     title <- "VAR Residuals"
-
     data <- as.data.frame(stats::residuals(x))
   } else {
     title <- "Historic Values"
@@ -85,5 +83,5 @@ ggvar_values_colored <- function(
   ggplot(data_values, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(color = serie), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::labs(title = title)
+    ggplot2::labs(title = title, x = "Index", y = "Values")
 }

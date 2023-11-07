@@ -15,7 +15,7 @@ ggvar_stability(
 )
 }
 \arguments{
-\item{x}{A "varest" object.}
+\item{x}{A "varest" object to pass to \link[vars]{stability}, or, directly, a "varstabil" object.}
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
@@ -36,6 +36,6 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{stability} call. Confidence intevals are calculated using \link[strucchange]{boundary}.
 }
 \examples{
-ggvar_values(vars::VAR(EuStockMarkets))
+ggvar_stability(vars::VAR(EuStockMarkets))
 
 }

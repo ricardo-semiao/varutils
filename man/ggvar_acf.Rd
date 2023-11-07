@@ -6,7 +6,7 @@
 \title{Plot Autocorrelation (and Similars) of Dataset}
 \usage{
 ggvar_acf(
-  data,
+  x,
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
@@ -19,7 +19,7 @@ ggvar_acf(
 )
 
 ggvar_ccf(
-  data,
+  x,
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
@@ -32,7 +32,7 @@ ggvar_ccf(
 )
 }
 \arguments{
-\item{data}{A dataset (object coercible to data.frame) with variables to calculate de ACF}
+\item{x}{A dataset (object coercible to data.frame) or a "varest" object to get residuals from.}
 
 \item{type}{The type of ACF to be computed, passed to \link[stats]{acf}. Can be either "correlation", "covariance", or "partial".}
 
@@ -63,5 +63,6 @@ An object of class \code{ggplot}.
 \examples{
 ggvar_acf(EuStockMarkets)
 ggvar_ccf(EuStockMarkets)
+ggvar_acf(vars::VAR(EuStockMarkets))
 
 }

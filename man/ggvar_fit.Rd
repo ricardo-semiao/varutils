@@ -34,7 +34,7 @@ ggvar_fit_colored(
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
-\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a numeric sequence}
+\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to \code{x$obs}. Defaults to a numeric sequence.}
 
 \item{palette}{A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.}
 

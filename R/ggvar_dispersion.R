@@ -37,5 +37,5 @@ ggvar_dispersion <- function(
     ggplot2::geom_point(color = palette[1], alpha = alpha, ...) +
     ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
     ggplot2::facet_wrap(ggplot2::vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = "VAR Residuals Dispersion")
+    ggplot2::labs(title = "VAR Residuals Dispersion", x = "Fitted", y = "Residuals")
 }

@@ -24,6 +24,7 @@ Suggests:
     knitr,
     RColorBrewer,
     rmarkdown,
+    strucchange,
     viridis
 VignetteBuilder: 
     knitr

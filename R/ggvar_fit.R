@@ -5,7 +5,7 @@
 #' @param x A "varest" object to get fitted values from.
 #' @param compare Logical, should the true values be printed?
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
-#' @param index A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a numeric sequence
+#' @param index A vector of labels to the x-axis, normally dates. Must have length equal to \code{x$obs}. Defaults to a numeric sequence.
 #' @param palette A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.
 #' @param linetypes A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
@@ -68,6 +68,6 @@ ggvar_fit_colored <- function(
   ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(color = .data$serie, linetype = .data$type), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::labs(title = "Fitted VAR Values") +
-    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none")
+    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none") +
+    ggplot2::labs(title = "Fitted VAR Values", x = "Index", y = "Fitted")
 }
