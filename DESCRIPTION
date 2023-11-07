@@ -8,7 +8,7 @@ Description: Functions for commonly needed ggplot graphs for Vector
     Auto-Regressive models, like IRF's, FEVD's, predict graphs, and VAR
     residual analysis. Soon to contain functions for common tests and
     statistics, and other VAR-like objects.
-License: None
+License: MIT + file LICENSE
 Imports: 
     dplyr,
     ggplot2,

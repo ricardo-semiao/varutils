@@ -23,8 +23,8 @@ analysis and retrieval of trends, seasonality, and structural breaks,
 using common methods and statistical tests. Additionally, I want to
 expand the package to other VAR-like objects.
 
-**Disclaimer:** this package is in costant development, and in the most
-early stages of life. It hasn’t been thorougly tested and can present
+**Disclaimer:** this package is in constant development, and in the most
+early stage of life. It hasn’t been thoroughly tested and can present
 several bugs. Please report any problems in my email (below) or as a
 github issue. Thank you for the attention.
 
