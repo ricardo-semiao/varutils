@@ -8,8 +8,8 @@
 ggvar_fit(
   x,
   compare = TRUE,
-  vars = NULL,
-  dates = 1:x$obs,
+  series = NULL,
+  index = 1:x$obs,
   linetypes = c("solid", "dashed"),
   scales = "fixed",
   ncol = 1
@@ -17,8 +17,8 @@ ggvar_fit(
 
 ggvar_fit_colored(
   x,
-  vars = NULL,
-  dates = 1:x$obs,
+  series = NULL,
+  index = 1:x$obs,
   compare = TRUE,
   palette = NULL,
   linetypes = c("solid", "dashed")
@@ -29,9 +29,9 @@ ggvar_fit_colored(
 
 \item{compare}{Logical, should the true values be printed?}
 
-\item{vars}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
-\item{dates}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a vector of indexes.}
+\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to x$obs. Defaults to a vector of indexes.}
 
 \item{linetypes}{A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
 
@@ -39,16 +39,17 @@ ggvar_fit_colored(
 
 \item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{palette}{A vector of colors. Each for a different variable. See `vignette(palettes)`.}
+\item{palette}{A vector of colors. Each for a different variable. See \code{vignette("palettes")}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots fitted values of a VAR model, versus the actual values. `ggvar_fit` Plots each series in a facet. `ggvar_fit_colored` plots all in the same graph, each with a different color.
+Plots fitted values of a VAR model, versus the actual values. \code{ggvar_fit} Plots each series in a facet. \code{ggvar_fit_colored} plots all in the same graph, each with a different color.
 }
 \examples{
 x <- vars::VAR(EuStockMarkets)
-ggvar_fit(x, dates = stats::time(EuStockMarkets))
+ggvar_fit(x, index = stats::time(EuStockMarkets))
+ggvar_fit_colored(x, index = stats::time(EuStockMarkets))
 
 }

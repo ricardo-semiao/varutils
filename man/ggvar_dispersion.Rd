@@ -6,7 +6,7 @@
 \usage{
 ggvar_dispersion(
   x,
-  vars = NULL,
+  series = NULL,
   scales = "fixed",
   ncol = 1,
   alpha = 0.5,
@@ -16,7 +16,7 @@ ggvar_dispersion(
 \arguments{
 \item{x}{A "varest" object to get residuals and fitted values from.}
 
-\item{vars}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
@@ -24,7 +24,7 @@ ggvar_dispersion(
 
 \item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
 
-\item{palette}{A vector of colors (points, x-axis line). See `vignette(palettes)`.}
+\item{palette}{A vector of colors (points, x-axis line). See \code{vignette("palettes")}.}
 }
 \value{
 An object of class \code{ggplot}.

@@ -4,18 +4,18 @@
 \alias{ggvar_dist}
 \title{Plot VAR Residuals Distribution}
 \usage{
-ggvar_dist(x, vars = NULL, bins = 30, size = 1, palette = c("grey", "black"))
+ggvar_dist(x, series = NULL, bins = 30, size = 1, palette = c("grey", "black"))
 }
 \arguments{
 \item{x}{A "varest" object.}
 
-\item{vars}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
 \item{bins}{An interger. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.}
 
 \item{size}{An interger. The size of the normal curve line, passed to \link[ggplot2]{geom_line}.}
 
-\item{palette}{A vector of colors (bins, normal curve). See `vignette(palettes)`.}
+\item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
 }
 \value{
 An object of class \code{ggplot}.
@@ -25,6 +25,6 @@ Plots the histogram of the residuals of a VAR model, overlayed with a normal cur
 }
 \examples{
 x <- vars::VAR(EuStockMarkets)
-ggvar_fit(x, dates = stats::time(EuStockMarkets))
+ggvar_dist(x)
 
 }
