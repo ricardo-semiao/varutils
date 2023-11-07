@@ -61,8 +61,6 @@ ggvar_values_colored <- function(
   stopifnot(inherits(x, c("data.frame", "matrix", "varest")))
 
   # Create values:
-  palette <- get_pallete(palette, 1)
-
   if (inherits(x, "varest")) {
     title <- "VAR Residuals"
     data <- as.data.frame(stats::residuals(x))
@@ -72,6 +70,7 @@ ggvar_values_colored <- function(
   }
 
   series <- series %||% colnames(data)
+  palette <- get_pallete(palette, length(series))
   index <- index %||% 1:nrow(data)
 
   # Data - pivoting:

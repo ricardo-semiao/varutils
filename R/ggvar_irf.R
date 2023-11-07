@@ -57,6 +57,6 @@ ggvar_irf <- function(
     ggplot2::geom_line(color = palette[1]) +
     ggplot2::geom_hline(yintercept = 0) +
     ggplot_add +
-    labs(title = "VAR Impulse Response Functions", x = "Forecast horizon", y = "Effect") +
+    ggplot2::labs(title = "VAR Impulse Response Functions", x = "Forecast horizon", y = "Effect") +
     create_sec_axis()
 }

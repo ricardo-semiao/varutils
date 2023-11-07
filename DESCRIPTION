@@ -6,7 +6,7 @@ Author: Ricardo Semião e Castro
 Maintainer: Ricardo Semião e Castro <ricardo.semiao@outlook.com>
 Description: Functions for commonly needed ggplot graphs for Vector
     Auto-Regressive models, like IRF's, FEVD's, predict graphs, and VAR
-    residual analisys. Soon to contain functions for common tests and
+    residual analysis. Soon to contain functions for common tests and
     statistics, and other VAR-like objects.
 License: None
 Imports: 
