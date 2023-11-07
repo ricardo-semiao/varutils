@@ -37,3 +37,29 @@ get_pallete <- function(palette, n, ...) {
     else {stop("Unrecognized `palette` argument")}
   }
 }
+
+
+create_sec_axis <- function() {
+  my_sec_axis <- function(name) ggplot2::sec_axis(~ ., name = name, breaks = NULL, labels = NULL)
+
+  list(
+    ggplot2::scale_x_continuous(sec.axis = my_sec_axis("Impulse")),
+    ggplot2::scale_y_continuous(sec.axis = my_sec_axis("Response")),
+    ggplot2::theme(axis.title.x.top = ggplot2::element_text(vjust = 1.5),
+                   axis.title.y.right = ggplot2::element_text(vjust = 1.5))
+  )
+}
+
+
+define_facet <- function(facet, var1, var2, scales, independent) {
+    if (facet == "ggh4x") {
+      if (!rlang::is_installed("ggh4x")) {
+        warning("Package ggh4x is not installed. Coercing `facet = 'ggplot'`.")
+        facet <- "ggplot"
+      } else {
+        ggh4x::facet_grid2(!!var1 ~ !!var2, scales = scales, independent = independent)
+      }
+    } else if (facet == "ggplot") {
+      ggplot2::facet_grid(vars(!!rlang::ensym(var1)), vars(!!rlang::ensym(var2)), scales = scales)
+    } else { stop("Invalid `facet` argument.") }
+}

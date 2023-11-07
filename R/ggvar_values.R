@@ -47,7 +47,7 @@ ggvar_values <- function(
   # Graph:
   ggplot(data_values, aes(.data$index, .data$value)) +
     ggplot2::geom_line(color = palette[1], ...) +
-    ggplot2::facet_wrap(ggplot2::vars(.data$serie), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = title, x = "Index", y = "Values")
 }
 
@@ -68,7 +68,7 @@ ggvar_values_colored <- function(
     data <- as.data.frame(stats::residuals(x))
   } else {
     title <- "Historic Values"
-    data <- x
+    data <- as.data.frame(x)
   }
 
   series <- series %||% colnames(data)

@@ -19,7 +19,7 @@ ggvar_stability(
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
-\item{ci}{The level of confidence for the \link[strucchange]{boundary}. confidence interval.}
+\item{ci}{The level of confidence for the \link[strucchange]{boundary}.}
 
 \item{...}{Further arguments passed to \link[strucchange]{boundary}.}
 

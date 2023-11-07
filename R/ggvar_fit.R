@@ -40,7 +40,7 @@ ggvar_fit <- function(
   # Graph:
   ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(linetype = .data$type), color = palette, ...) +
-    ggplot2::facet_wrap(ggplot2::vars(.data$serie), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = "Fitted VAR Values") +
     ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none")
 }

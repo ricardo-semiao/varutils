@@ -5,13 +5,13 @@
 #' @param x A dataset (object coercible to data.frame) or a "varest" object to get residuals from.
 #' @param type The type of ACF to be computed, passed to \link[stats]{acf}. Can be either "correlation", "covariance", or "partial".
 #' @param lag.max The number of lags used to calculate the ACF, passed to \link[stats]{acf}. defaults to \code{ceiling(10 * log(nrow(data) / ncol(data), base = 10))}.
-#' @param ci The level of confidence for the ACF confidence interval.
+#' @param ci The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit.
 #' @param geom The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.
 #' @param facet The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.
 #' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
 #' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param independent If scales are able to vary between rows and/or columns. See \link[ggh4x]{facet_grid2}.
+#' @param independent For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.
 #' @param ... Aditional arguments passed to the ggplot geom defined by \code{geom}.
 #'
 #' @return An object of class \code{ggplot}.
@@ -50,12 +50,16 @@ ggvar_acf <- function(
   lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
   lag.min <- if (type == "partial") 1 else 0
 
-  ggplot_add <-  switch(
-    geom,
-    "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
-    "area" = list(ggplot2::geom_area(aes(ymin = 0, ymax = .data$values), fill = palette[1], ...)),
-    stop("Invalid `geom` argument. Choose 'segment' or  'area'")
+  ggplot_add <- list(
+    switch(
+      geom,
+      "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
+      "area" = list(ggplot2::geom_area(aes(ymin = 0, ymax = .data$values), fill = palette[1], ...)),
+      stop("Invalid `geom` argument. Choose 'segment' or  'area'")
+    ),
+    if (!isFALSE(ci)) { ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[2], fill = palette[4]) }
   )
+
 
   # Data
   data_acf <- purrr::map2_dfr(as.data.frame(data), series, function(x, name) {
@@ -69,8 +73,7 @@ ggvar_acf <- function(
   ggplot(data_acf, aes(.data$lag, .data$value)) +
     ggplot_add +
     ggplot2::geom_hline(yintercept = 0, color = palette[3]) +
-    ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[2], fill = palette[4]) +
-    ggplot2::facet_wrap(ggplot2::vars(serie), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = ifelse(type == "partial", "Partial Autocorrelation", paste0("Auto", type)))
 }
 
@@ -110,16 +113,7 @@ ggvar_ccf <- function(
     } else if (geom == "segment") {
       ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)
     } else {stop("Invalid `geom` argument.")},
-    if (facet == "ggh4x") {
-      if (!rlang::is_installed("ggh4x")) {
-        warning("Package ggh4x is not installed. Coercing `facet = 'ggplot'`.")
-        facet <- "ggplot"
-      } else {
-        ggh4x::facet_grid2(var1 ~ var2, scales = scales, independent = independent)
-      }
-    } else if (facet == "ggplot") {
-      ggplot2::facet_grid(var1 ~ var2, scales = scales)
-    } else {stop("Invalid `facet` argument.")}
+    define_facet(facet, var1, var2, scales, independent)
   )
 
   # Data

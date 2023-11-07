@@ -33,8 +33,12 @@ ggvar_fevd(
 \item{...}{Aditional arguments passed to the ggplot geom defined by \code{geom}.}
 }
 \value{
-A ggplot.
+An object of class \code{ggplot}.
 }
 \description{
 Plots the result of a \link[vars]{fevd} call.
+}
+\examples{
+ggvar_fevd(vars::VAR(EuStockMarkets), n.ahead = 10)
+
 }

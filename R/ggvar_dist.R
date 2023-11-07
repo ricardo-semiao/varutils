@@ -42,7 +42,7 @@ ggvar_dist = function(
     ggplot2::geom_histogram(aes(y = ggplot2::after_stat(density)), fill = palette[1], bins = bins, ...) +
     ggplot2::geom_line(aes(y = density, color = "Normal curve"), data = data_density, size = size) +
     ggplot2::scale_color_manual(values = palette[2], name = "Legend") +
-    ggplot2::facet_wrap(ggplot2::vars(.data$serie), ncol = 1, scales = "free") +
+    ggplot2::facet_wrap(vars(.data$serie), ncol = 1, scales = "free") +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::labs(title = "VAR Residuals Distribution", x = "Residuals", y = "Density")
 }

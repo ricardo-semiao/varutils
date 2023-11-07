@@ -63,7 +63,7 @@ ggvar_predict <- function(
     ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
                          fill = palette[4], color = palette[3], linetype = linetype, alpha = alpha) +
     ggplot2::geom_line(aes(color = .data$type), ...) +
-    ggplot2::facet_wrap(ggplot2::vars(.data$serie), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::scale_color_manual(values = palette[1:2], guide = if (is.null(data_test)) "none" else "legend") +
     ggplot2::labs(title = "VAR Predicted Values", x = "Index", y = "Values", color = "Series")
 }

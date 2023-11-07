@@ -11,9 +11,10 @@
 #' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #' @param ... Aditional arguments passed to the ggplot geom defined by \code{geom}.
 #'
-#' @return A ggplot.
+#' @return An object of class \code{ggplot}.
 #'
-#' @importFrom ggplot2 ggplot aes geom_bar facet_wrap vars labs scale_fill_manual
+#' @examples
+#' ggvar_fevd(vars::VAR(EuStockMarkets), n.ahead = 10)
 #'
 #' @export
 ggvar_fevd <- function(
@@ -31,27 +32,29 @@ ggvar_fevd <- function(
     if (inherits(x, "varfevd")) n.ahead <- nrow(x[[1]]) else stop("`n.ahead` must be supplied with `x` of class 'varest'")
   }
 
-  ggplot_add <- switch(
-    geom,
-    "bar" = list(ggplot2::geom_bar(aes(fill = .data$serie), stat = "identity", ...)),
-    "area" = list(ggplot2::geom_area(aes(fill = .data$serie), ...)),
-    "line" = list(ggplot2::geom_line(aes(color = .data$serie), ...),
-                  ggplot2::geom_point(aes(color = .data$serie), shape = 1)),
-    stop("Invalid `geom` argument. Choose 'bar', 'area' or 'line'")
+  ggplot_add <- list(
+    switch(
+      geom,
+      "bar" = list(ggplot2::geom_bar(aes(fill = .data$serie), stat = "identity", ...)),
+      "area" = list(ggplot2::geom_area(aes(fill = .data$serie), ...)),
+      "line" = list(ggplot2::geom_line(aes(color = .data$serie), ...),
+                    ggplot2::geom_point(aes(color = .data$serie), shape = 1)),
+      stop("Invalid `geom` argument. Choose 'bar', 'area' or 'line'")
+    )
   )
 
   # Data - fevd:
   fevd <- if (inherits(x, "varest")) vars::fevd(x, n.ahead) else x
 
   data <- fevd %>%
-    purrr::imap_dfr(~ as.data.frame(.x) %>% dplyr::mutate(equation = .y, leads = 1:nrow(.))) %>%
-    tidyr::pivot_longer(-c(.data$equation, .data$leads), names_to = "serie", values_to = "value") %>%
+    purrr::imap_dfr(~ as.data.frame(.x) %>% dplyr::mutate(equation = .y, lead = 1:nrow(.))) %>%
+    tidyr::pivot_longer(-c(.data$equation, .data$lead), names_to = "serie", values_to = "value") %>%
     dplyr::filter(equation %in% series & serie %in% series)
 
   # Graph:
-  ggplot(data, aes(.data$leads, .data$value)) +
+  ggplot(data, aes(.data$lead, .data$value)) +
     ggplot_add +
-    ggplot2::facet_wrap(ggplot2::vars(.data$equation), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$equation), scales = scales, ncol = ncol) +
     ggplot2::scale_fill_manual(values = palette) +
     ggplot2::labs(title = "VAR Forecast Error Variance Decomposition", x = "Forecast horizon", y = "Variance contribution")
 }

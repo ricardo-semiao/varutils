@@ -4,7 +4,7 @@
 #'
 #' @param x A "varest" object to pass to \link[vars]{stability}, or, directly, a "varstabil" object.
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
-#' @param ci The level of confidence for the \link[strucchange]{boundary}. confidence interval.
+#' @param ci The level of confidence for the \link[strucchange]{boundary}.
 #' @param ... Further arguments passed to \link[strucchange]{boundary}.
 #' @param palette A vector of colors (line, conf. interval). See \code{vignette("palettes")}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
@@ -41,6 +41,6 @@ ggvar_stability <- function(
   ggplot(data_stability, aes(index, value)) +
     ggplot2::geom_line(color = palette[1]) +
     ggplot2::geom_hline(yintercept = c(-interval, interval), color = palette[2], linetype = 2) +
-    ggplot2::facet_wrap(ggplot2::vars(.data$equation), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$equation), scales = scales, ncol = ncol) +
     ggplot2::labs(title = "VAR Structural Stability Analisys", x = "Index", y = "Values")
 }

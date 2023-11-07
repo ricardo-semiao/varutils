@@ -38,7 +38,7 @@ ggvar_ccf(
 
 \item{lag.max}{The number of lags used to calculate the ACF, passed to \link[stats]{acf}. defaults to \code{ceiling(10 * log(nrow(data) / ncol(data), base = 10))}.}
 
-\item{ci}{The level of confidence for the ACF confidence interval.}
+\item{ci}{The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit.}
 
 \item{geom}{The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.}
 
@@ -52,7 +52,7 @@ ggvar_ccf(
 
 \item{...}{Aditional arguments passed to the ggplot geom defined by \code{geom}.}
 
-\item{independent}{If scales are able to vary between rows and/or columns. See \link[ggh4x]{facet_grid2}.}
+\item{independent}{For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.}
 }
 \value{
 An object of class \code{ggplot}.
