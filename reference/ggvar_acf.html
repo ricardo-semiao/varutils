@@ -24,7 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/palettes.html">palettes</a>
+    <a class="dropdown-item" href="../articles/palettes.html">Color Palettes in varutils</a>
   </div>
 </li>
 <li class="nav-item">
@@ -59,11 +59,11 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ggvar_acf</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"correlation"</span>,</span>
 <span>  lag.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ci <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  geom <span class="op">=</span> <span class="st">"segment"</span>,</span>
-<span>  facet <span class="op">=</span> <span class="st">"ggplot"</span>,</span>
 <span>  palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  scales <span class="op">=</span> <span class="st">"fixed"</span>,</span>
 <span>  ncol <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -72,6 +72,7 @@
 <span></span>
 <span><span class="fu">ggvar_ccf</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"correlation"</span>,</span>
 <span>  lag.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ci <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -90,6 +91,10 @@
 <dd><p>A dataset (object coercible to data.frame) or a "varest" object to get residuals from.</p></dd>
 
 
+<dt>series</dt>
+<dd><p>A character vector with variables to consider. Defaults to all (<code>NULL</code>).</p></dd>
+
+
 <dt>type</dt>
 <dd><p>The type of ACF to be computed, passed to <a href="https://rdrr.io/r/stats/acf.html" class="external-link">acf</a>. Can be either "correlation", "covariance", or "partial".</p></dd>
 
@@ -106,10 +111,6 @@
 <dd><p>The ggplot geom used to create the plot, "segment" for <a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a> (the default) or "area" for <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area</a>.</p></dd>
 
 
-<dt>facet</dt>
-<dd><p>The facet "engine" to be used. "ggplot2" for <a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a>, "ggh4x" for <a href="https://teunbrand.github.io/ggh4x/reference/facet_grid2.html" class="external-link">facet_grid2</a>.</p></dd>
-
-
 <dt>palette</dt>
 <dd><p>A vector of colors (bins, normal curve). See <code><a href="../articles/palettes.html">vignette("palettes")</a></code>.</p></dd>
 
@@ -119,11 +120,15 @@
 
 
 <dt>ncol</dt>
-<dd><p>An interger. The number of facet columns, passed to <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a>.</p></dd>
+<dd><p>An integer. The number of facet columns, passed to <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a>.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Aditional arguments passed to the ggplot geom defined by <code>geom</code>.</p></dd>
+<dd><p>Additional arguments passed to the ggplot geom defined by <code>geom</code>.</p></dd>
+
+
+<dt>facet</dt>
+<dd><p>The facet "engine" to be used. "ggplot2" for <a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a>, "ggh4x" for <a href="https://teunbrand.github.io/ggh4x/reference/facet_grid2.html" class="external-link">facet_grid2</a>.</p></dd>
 
 
 <dt>independent</dt>
