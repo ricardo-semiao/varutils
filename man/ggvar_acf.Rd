@@ -7,11 +7,11 @@
 \usage{
 ggvar_acf(
   x,
+  series = NULL,
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
   geom = "segment",
-  facet = "ggplot",
   palette = c("black", "black", "blue", NA),
   scales = "fixed",
   ncol = 1,
@@ -20,6 +20,7 @@ ggvar_acf(
 
 ggvar_ccf(
   x,
+  series = NULL,
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
@@ -34,6 +35,8 @@ ggvar_ccf(
 \arguments{
 \item{x}{A dataset (object coercible to data.frame) or a "varest" object to get residuals from.}
 
+\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+
 \item{type}{The type of ACF to be computed, passed to \link[stats]{acf}. Can be either "correlation", "covariance", or "partial".}
 
 \item{lag.max}{The number of lags used to calculate the ACF, passed to \link[stats]{acf}. defaults to \code{ceiling(10 * log(nrow(data) / ncol(data), base = 10))}.}
@@ -42,15 +45,15 @@ ggvar_ccf(
 
 \item{geom}{The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.}
 
-\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
-
 \item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Aditional arguments passed to the ggplot geom defined by \code{geom}.}
+\item{...}{Additional arguments passed to the ggplot geom defined by \code{geom}.}
+
+\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
 
 \item{independent}{For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.}
 }

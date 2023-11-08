@@ -23,11 +23,11 @@ ggvar_dispersion(
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
 \item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
 
-\item{...}{Aditional arguments passed to \link[ggplot2]{geom_point}.}
+\item{...}{Additional arguments passed to \link[ggplot2]{geom_point}.}
 }
 \value{
 An object of class \code{ggplot}.

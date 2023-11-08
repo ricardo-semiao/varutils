@@ -16,9 +16,9 @@ ggvar_fevd(
 )
 }
 \arguments{
-\item{x}{A "varest" objecto to pass to \link[vars]{fevd}, or, directly, a "varfevd" object.}
+\item{x}{A "varest" object to pass to \link[vars]{fevd}, or, directly, a "varfevd" object.}
 
-\item{n.ahead}{An interger. The size of the forecast horizon, passed to \link[vars]{fevd}. Unused if `x` is "varfevd".}
+\item{n.ahead}{An integer. The size of the forecast horizon, passed to \link[vars]{fevd}. Unused if `x` is "varfevd".}
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
@@ -28,9 +28,9 @@ ggvar_fevd(
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Aditional arguments passed to the ggplot geom defined by \code{geom}.}
+\item{...}{Additional arguments passed to the ggplot geom defined by \code{geom}.}
 }
 \value{
 An object of class \code{ggplot}.

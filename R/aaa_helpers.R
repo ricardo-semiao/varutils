@@ -1,3 +1,4 @@
+# Palette helpers ---------------------------------------------------------
 suported_palettes <- list(
   base = c("rainbow", "heat.colors", "terrain.colors", "topo.colors", "cm.colors"),
   viridis = c("viridis", "magma", "inferno", "plasma", "cividis", "mako", "rocket", "turbo"),
@@ -39,6 +40,7 @@ get_pallete <- function(palette, n, ...) {
 }
 
 
+# Ggplot helpers ----------------------------------------------------------
 create_sec_axis <- function() {
   my_sec_axis <- function(name) ggplot2::sec_axis(~ ., name = name, breaks = NULL, labels = NULL)
 
@@ -63,3 +65,51 @@ define_facet <- function(facet, var1, var2, scales, independent) {
       ggplot2::facet_grid(vars(!!rlang::ensym(var1)), vars(!!rlang::ensym(var2)), scales = scales)
     } else { stop("Invalid `facet` argument.") }
 }
+
+
+
+# Test helpers ------------------------------------------------------------
+get_names <- function(x, type) {
+  if (inherits(x, "varest")) return(names(x$varresult))
+  if (inherits(x, "varprd")) return(names(x$fcst))
+  if (inherits(x, "varstab")) return(x$names)
+  if (inherits(x, "varfevd")) return(names(x))
+  if (inherits(x, "varirf")) return(x[[type]])
+}
+
+test <- list(
+  class_arg = function(arg, classes) {
+    if (!inherits(arg, classes)) {
+      stop(paste0("`", rlang::ensym(arg), "` must inherit one of ", paste("'", options, "'", collapse = ", ")))
+    }
+  },
+  series = function(arg, x, type = NULL) {
+    names <- get_names(x, type)
+    if (!inherits(arg, c("character", "NULL"))) {
+      stop(paste0("`", rlang::ensym(arg), "` must inherit one of 'character', 'NULL'"))
+    } else if (!all(arg %in% names)) {
+      stop(paste0("`", rlang::ensym(arg), "` must be one of ", paste("'", names, "'", collapse = ", ")))
+    }
+  },
+  index = function(index, x, n) {
+    stopifnot("`index` of wrong class" = is.null(index) || is.character(index) || is.double(index) || is.integer(index),
+              "`index` musn't have duplicated entries" = !anyDuplicated(index))
+    if (length(index) != n) {
+      stop(paste0("`index` must have a length of ", rlang::enexpr(n)))
+    }
+  },
+  categorical_arg = function(arg, options) {
+    if (!(arg %in% options)) {
+      stop(paste0("`", rlang::ensym(arg), "` must be one of", paste("'", options, "'", collapse = ", ")))
+    }
+  },
+  boolean_arg = function(arg) {
+    if (!(isTRUE(arg) || isFALSE(arg))) {
+      stop(paste0("`", rlang::ensym(arg), "` must be `TRUE` or `FALSE`"))
+    }
+  }
+)
+
+# Function version for atomate tests with testthat
+test_fun <- function() test
+

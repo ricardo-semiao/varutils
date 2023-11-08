@@ -27,7 +27,7 @@ ggvar_stability(
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.

@@ -6,9 +6,9 @@
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
 #' @param palette A vector of colors (points, x-axis line). See \code{vignette("palettes")}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
+#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #' @param alpha A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.
-#' @param ... Aditional arguments passed to \link[ggplot2]{geom_point}.
+#' @param ... Additional arguments passed to \link[ggplot2]{geom_point}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -21,7 +21,8 @@ ggvar_dispersion <- function(
     palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...
   ) {
   # Initial tests:
-  stopifnot(inherits(x, "varest"), inherits(series, c("character", "NULL")))
+  test$class_arg(x, c("varest"))
+  test$series(series, x)
 
   # Create values:
   palette <- get_pallete(palette, 2)

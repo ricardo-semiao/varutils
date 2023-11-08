@@ -8,7 +8,7 @@
 #' @param ... Further arguments passed to \link[strucchange]{boundary}.
 #' @param palette A vector of colors (line, conf. interval). See \code{vignette("palettes")}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
+#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -22,7 +22,8 @@ ggvar_stability <- function(
     palette = c("black", "blue"), scales = "fixed", ncol = 1
   ) {
   # Initial tests:
-  stopifnot(inherits(x, c("varest", "varstabil")))
+  test$class_arg(x, c("varest", "varstabil"))
+  test$series(series, x)
 
   # Create values:
   series <- series %||% names(x$varresult)

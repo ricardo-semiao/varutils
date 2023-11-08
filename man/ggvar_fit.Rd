@@ -19,9 +19,9 @@ ggvar_fit(
 
 ggvar_fit_colored(
   x,
+  compare = TRUE,
   series = NULL,
   index = 1:x$obs,
-  compare = TRUE,
   palette = NULL,
   linetypes = c("solid", "dashed"),
   ...
@@ -38,13 +38,13 @@ ggvar_fit_colored(
 
 \item{palette}{A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.}
 
-\item{linetypes}{A vecotr of linetypes (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
+\item{linetypes}{A vector of line types (fitted, original), passed to \link[ggplot2]{scale_linetype_manual}.}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
+\item{...}{Additional arguments passed to \link[ggplot2]{geom_line}.}
 }
 \value{
 An object of class \code{ggplot}.

@@ -18,9 +18,9 @@ ggvar_irf(
 )
 }
 \arguments{
-\item{x}{A "varest" objecto to pass to \link[vars]{irf}, or, directly, a "varirf" object.}
+\item{x}{A "varest" object to pass to \link[vars]{irf}, or, directly, a "varirf" object.}
 
-\item{n.ahead}{An interger. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".}
+\item{n.ahead}{An integer. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".}
 
 \item{series_impulse}{A character vector with variables to consider for the impulses. Defaults to all (\code{NULL}).}
 

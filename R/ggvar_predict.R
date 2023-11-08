@@ -3,16 +3,16 @@
 #' Plots the result of a \link[vars]{predict.varest} call. Has an option to overlay it with the true variables, if provided a test dataset.
 #'
 #' @param x A "varest" object to get predictions from, or, directly, a "varprd" object.
-#' @param data_test A test dataset (object coercible to data.frame), with the actual series values.
-#' @param n.ahead An interger. The number of periods to predict, passed to \link[stats]{predict}.
+#' @param data_test A test data set (object coercible to data.frame), with the actual series values.
+#' @param n.ahead An integer. The number of periods to predict, passed to \link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of the "varprd" object.
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
 #' @param index A vector of labels to the x-axis, normally dates. Must have length equal to \code{n.ahead}. Defaults to a numeric sequence.
 #' @param palette A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.
-#' @param linetype A linetypes for \link[ggplot2]{geom_ribbon}.
+#' @param linetypes A line types for \link[ggplot2]{geom_ribbon}.
 #' @param alpha A double. The alpha aesthetic for the fill of \link[ggplot2]{geom_ribbon}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param ... Aditional arguments passed to \link[ggplot2]{geom_line}.
+#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
+#' @param ... Additional arguments passed to \link[ggplot2]{geom_line}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -23,15 +23,19 @@
 #' @export
 ggvar_predict <- function(
     x, data_test = NULL, n.ahead = nrow(data_test), series = NULL, index = 1:n.ahead,
-    palette = c("blue", "black", "darkblue", "gray"), linetype = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...
+    palette = c("blue", "black", "darkblue", "gray"), linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...
   ) {
   # Initial tests:
-  stopifnot(inherits(x, c("varest", "varprd")))
-  if (is.null(data_test)) {
-    n.ahead %||% stop("`n.ahead` must be provided with NULL `data_test`")
-  } else {
-    stopifnot(inherits(data_test, c("data.frame", "matrix")), n.ahead == nrow(data_test))
+  test$class_arg(x, c("varest", "varprd"))
+  test$class_arg(data_test, c("data.frame", "matrix", "NULL"))
+  test$series(series, x)
+  stopifnot("`n.ahead` must be supplied with `x` of class 'varest' and NULL `data_test`" = is.null(data_test) || inherits(x, "varprd") || is.numeric(n.ahead))
+
+  if (!is.null(data_test) && !is.null(n.ahead)) {
+    n.ahead <- nrow(data_test)
+    warning("`n.ahead` suplied with non NULL `data_test` was set to `nrow(data_test)`")
   }
+  test$index(index, x, n = n.ahead)
 
   # Create values:
   palette <- get_pallete(palette, 4)
@@ -61,7 +65,7 @@ ggvar_predict <- function(
   # Graph:
   ggplot(data_pred, aes(.data$index, .data$value)) +
     ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
-                         fill = palette[4], color = palette[3], linetype = linetype, alpha = alpha) +
+                         fill = palette[4], color = palette[3], linetype = linetypes[1], alpha = alpha) +
     ggplot2::geom_line(aes(color = .data$type), ...) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::scale_color_manual(values = palette[1:2], guide = if (is.null(data_test)) "none" else "legend") +

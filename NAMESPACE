@@ -3,7 +3,7 @@
 export(ggvar_acf)
 export(ggvar_ccf)
 export(ggvar_dispersion)
-export(ggvar_dist)
+export(ggvar_distribution)
 export(ggvar_fevd)
 export(ggvar_fit)
 export(ggvar_fit_colored)

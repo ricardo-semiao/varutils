@@ -18,7 +18,7 @@ ggvar_values(
 ggvar_values_colored(x, series = NULL, index = NULL, palette = NULL, ...)
 }
 \arguments{
-\item{x}{Either a "varest" object for plotting the residual values, or an dataset (object coercible to data.frame) with numeric variables and possibly a date/index column. If provided a index column (not a date one), it must be called "Date".}
+\item{x}{Either a "varest" object for plotting the residuals, or an dataset (object coercible to data.frame) with numeric variables.}
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
@@ -28,9 +28,9 @@ ggvar_values_colored(x, series = NULL, index = NULL, palette = NULL, ...)
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
+\item{...}{Additional arguments passed to \link[ggplot2]{geom_line}.}
 }
 \value{
 An object of class \code{ggplot}.

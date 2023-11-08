@@ -11,7 +11,7 @@ ggvar_predict(
   series = NULL,
   index = 1:n.ahead,
   palette = c("blue", "black", "darkblue", "gray"),
-  linetype = "dashed",
+  linetypes = "dashed",
   alpha = 0.8,
   scales = "fixed",
   ncol = 1,
@@ -21,9 +21,9 @@ ggvar_predict(
 \arguments{
 \item{x}{A "varest" object to get predictions from, or, directly, a "varprd" object.}
 
-\item{data_test}{A test dataset (object coercible to data.frame), with the actual series values.}
+\item{data_test}{A test data set (object coercible to data.frame), with the actual series values.}
 
-\item{n.ahead}{An interger. The number of periods to predict, passed to \link[stats]{predict}.}
+\item{n.ahead}{An integer. The number of periods to predict, passed to \link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of the "varprd" object.}
 
 \item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
 
@@ -31,15 +31,15 @@ ggvar_predict(
 
 \item{palette}{A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.}
 
-\item{linetype}{A linetypes for \link[ggplot2]{geom_ribbon}.}
+\item{linetypes}{A line types for \link[ggplot2]{geom_ribbon}.}
 
 \item{alpha}{A double. The alpha aesthetic for the fill of \link[ggplot2]{geom_ribbon}.}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
+\item{...}{Additional arguments passed to \link[ggplot2]{geom_line}.}
 }
 \value{
 An object of class \code{ggplot}.

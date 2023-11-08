@@ -1,14 +1,28 @@
+#' @noRd
+setup_tests_ggvar_values <- function(x, series){
+  test$class_arg(x, c("data.frame", "matrix", "varest"))
+  test$series(series, x)
+}
+
+#' @noRd
+setup_data_ggvar_values <- function(data, series, index){
+  data %>%
+    dplyr::select(dplyr::all_of(series)) %>%
+    dplyr::mutate(index = index) %>%
+    tidyr::pivot_longer(-.data$index, values_to = "value", names_to = "serie")
+}
+
 #' Plot Values of Dataset or VAR Residuals
 #'
 #' Plots the historic values of variables in a dataset, or residuals of a VAR model. \code{ggvar_values} Plots each series in a facet. \code{ggvar_values_colored} plots all in the same graph, each with a different color.
 #'
-#' @param x Either a "varest" object for plotting the residual values, or an dataset (object coercible to data.frame) with numeric variables and possibly a date/index column. If provided a index column (not a date one), it must be called "Date".
+#' @param x Either a "varest" object for plotting the residuals, or an dataset (object coercible to data.frame) with numeric variables.
 #' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
 #' @param index A vector of labels to the x-axis, normally dates. Must have length equal to \code{x$obs} or \code{nrow(x)}. Defaults to a numeric sequence.
 #' @param palette A vector of colors. Just one for \code{ggvar_values}, one for each variable for \code{ggvar_values_colored}. See \code{vignette("palettes")}.
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An interger. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param ... Aditional arguments passed to \link[ggplot2]{geom_line}.
+#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
+#' @param ... Additional arguments passed to \link[ggplot2]{geom_line}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -23,26 +37,25 @@ ggvar_values <- function(
     palette = c("black"), scales = "fixed", ncol = 1, ...
   ){
   # Initial tests:
-  stopifnot(inherits(x, c("data.frame", "matrix", "varest")))
+  setup_tests_ggvar_values(x, series)
 
   # Create values:
-  palette <- get_pallete(palette, 1)
-
   if (inherits(x, "varest")) {
-    title <- "VAR Residuals"
+    title <- "VAR Residuals Distribution"
     data <- as.data.frame(stats::residuals(x))
   } else {
-    title <- "Historic Values"
+    title <- "Time Series Distribution"
     data <- as.data.frame(x)
   }
 
-  series <- series %||% colnames(data)
   index <- index %||% 1:nrow(data)
+  series <- series %||% colnames(data)
+  palette <- get_pallete(palette, 1)
 
-  # Data - pivoting:
-  data_values <- data %>%
-    dplyr::mutate(index = index) %>%
-    tidyr::pivot_longer(-.data$index, values_to = "value", names_to = "serie")
+  test$index(index, x, n = nrow(data))
+
+  # Data:
+  data_values <- setup_data_ggvar_values(data, series, index)
 
   # Graph:
   ggplot(data_values, aes(.data$index, .data$value)) +
@@ -58,25 +71,25 @@ ggvar_values_colored <- function(
     palette = NULL, ...
   ) {
   # Initial tests:
-  stopifnot(inherits(x, c("data.frame", "matrix", "varest")))
+  setup_tests_ggvar_values(x, series)
 
   # Create values:
   if (inherits(x, "varest")) {
-    title <- "VAR Residuals"
+    title <- "VAR Residuals Distribution"
     data <- as.data.frame(stats::residuals(x))
   } else {
-    title <- "Historic Values"
+    title <- "Time Series Distribution"
     data <- as.data.frame(x)
   }
 
+  index <- index %||% 1:nrow(data)
   series <- series %||% colnames(data)
   palette <- get_pallete(palette, length(series))
-  index <- index %||% 1:nrow(data)
 
-  # Data - pivoting:
-  data_values <- data %>%
-    dplyr::mutate(index = index) %>%
-    tidyr::pivot_longer(-.data$index, values_to = "value", names_to = "serie")
+  test$index(index, x, n = nrow(data))
+
+  # Data:
+  data_values <- setup_data_ggvar_values(data, series, index)
 
   # Graph:
   ggplot(data_values, aes(.data$index, .data$value)) +

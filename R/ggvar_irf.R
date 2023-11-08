@@ -2,8 +2,8 @@
 #'
 #' Plots the result of a \link[vars]{irf} call.
 #'
-#' @param x A "varest" objecto to pass to \link[vars]{irf}, or, directly, a "varirf" object.
-#' @param n.ahead An interger. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".
+#' @param x A "varest" object to pass to \link[vars]{irf}, or, directly, a "varirf" object.
+#' @param n.ahead An integer. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".
 #' @param series_impulse A character vector with variables to consider for the impulses. Defaults to all (\code{NULL}).
 #' @param series_response A character vector with variables to consider for the responses. Defaults to all (\code{NULL}).
 #' @param facet The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.
@@ -21,15 +21,20 @@
 #' @export
 ggvar_irf <- function(
     x, n.ahead = NULL, series_impulse = NULL, series_response = NULL,
-    facet = "ggplot", ci = 0.95, ...,
+    facet = "ggplot",
+    ci = 0.95, ...,
     palette = c("black", "blue", "gray"), scales = "fixed", independent = "y"
   ){
   # Initial tests:
-  stopifnot(inherits(x, c("varirf", "varest")))
+  test$class_arg(x, c("varirf", "varest"))
+  test$series(series_impulse, x, "impulse")
+  test$series(series_response, x, "response")
+  test$categorical_arg(facet, c("ggplot", "ggh4x"))
+  stopifnot("`n.ahead` must be supplied with `x` of class 'varest'" = inherits(x, "varest") && is.numeric(n.ahead))
 
   # Create values:
-  series_impulse <- series_impulse %||% names(x$varresult)
-  series_response <- series_response %||% names(x$varresult)
+  series_impulse <- series_impulse %||% if (inherits(x, "varest")) names(x$varresult) else x$impulse
+  series_response <- series_response %||% if (inherits(x, "varest")) names(x$varresult) else x$response
   palette <- get_pallete(palette, max(length(series_impulse), length(series_response)))
 
   boot <- !isFALSE(ci)
@@ -54,9 +59,9 @@ ggvar_irf <- function(
 
   # Graph:
   ggplot(data, aes(.data$lead, .data$irf, ymin = .data$Lower, ymax = .data$Upper)) +
+    ggplot_add +
     ggplot2::geom_line(color = palette[1]) +
     ggplot2::geom_hline(yintercept = 0) +
-    ggplot_add +
     ggplot2::labs(title = "VAR Impulse Response Functions", x = "Forecast horizon", y = "Effect") +
     create_sec_axis()
 }
