@@ -21,11 +21,20 @@
 #'
 #' @export
 ggvar_fit <- function(
-    x, compare = TRUE, series = NULL, index = 1:x$obs,
+    x, compare = TRUE, series = NULL, index = 1:x$totobs,
     palette = c("black"), linetypes = c("solid", "dashed"), scales = "fixed", ncol = 1, ...
   ) {
   # Initial tests:
-  stopifnot(inherits(x, "varest"), inherits(series, c("character", "NULL")))
+  stopifnot(inherits(x, "varest"),
+            inherits(series, c("character", "NULL")),
+            is.null(index) || is.character(index) || is.double(index) || is.integer(index),
+            inherits(compare, "logical"))
+
+  if (length(index) != x$totobs) {
+    stop("`index` must have a length of `x$totobs`")
+  } else if (anyDuplicated(index)) {
+    stop("`index` musn't have duplicated entries")
+  }
 
   # Create values:
   series <- series %||% names(x$varresult)

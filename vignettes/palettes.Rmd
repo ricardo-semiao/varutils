@@ -1,5 +1,5 @@
 ---
-title: "Palettes in varutils"
+title: "palettes"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{palettes}

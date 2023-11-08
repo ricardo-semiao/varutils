@@ -9,7 +9,7 @@ ggvar_fit(
   x,
   compare = TRUE,
   series = NULL,
-  index = 1:x$obs,
+  index = 1:x$totobs,
   palette = c("black"),
   linetypes = c("solid", "dashed"),
   scales = "fixed",
