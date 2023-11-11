@@ -10,7 +10,7 @@ ggvar_distribution(
   plot_normal = TRUE,
   palette = c("grey", "black"),
   bins = 30,
-  size = 1,
+  linewidth = 1,
   ...
 )
 }
@@ -25,7 +25,7 @@ ggvar_distribution(
 
 \item{bins}{An integer. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.}
 
-\item{size}{An integer. The size of the normal curve line, passed to \link[ggplot2]{geom_line}.}
+\item{linewidth}{An integer. The linewidth of the normal curve line, passed to \link[ggplot2]{geom_line}.}
 
 \item{...}{Additional arguments passed to \link[ggplot2]{geom_histogram}.}
 }
@@ -36,6 +36,6 @@ An object of class \code{ggplot}.
 Plots the histogram of the residuals of a VAR model, or of the variables in a dataset, overlapped with a normal curve.
 }
 \examples{
-ggvar_distribution(vars::VAR(EuStockMarkets))
+ggvar_distribution(vars::VAR(freeny[-2]))
 
 }

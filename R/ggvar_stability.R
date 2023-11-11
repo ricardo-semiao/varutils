@@ -13,7 +13,7 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_stability(vars::VAR(EuStockMarkets))
+#' ggvar_stability(vars::VAR(freeny[-2]))
 #'
 #' @export
 ggvar_stability <- function(
@@ -26,7 +26,7 @@ ggvar_stability <- function(
   test$series(series, x)
 
   # Create values:
-  series <- series %||% names(x$varresult)
+  series <- series %||% if (inherits(x, "varest")) names(x$varresult) else names(x)
   palette <- get_pallete(palette, 2)
 
   # Data - stability:

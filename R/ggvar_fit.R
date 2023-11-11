@@ -2,7 +2,7 @@
 setup_tests_ggvar_fit <- function(x, compare, series, index) {
   test$class_arg(x, c("varest"))
   test$series(series, x)
-  test$index(index, x, n = x$totobs)
+  test$index(index, n = x$totobs)
   test$boolean_arg(compare)
 }
 
@@ -31,9 +31,9 @@ setup_data_ggvar_fit <- function(x, compare, series, index) {
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' x <- vars::VAR(EuStockMarkets)
-#' ggvar_fit(x, index = stats::time(EuStockMarkets))
-#' ggvar_fit_colored(x, index = stats::time(EuStockMarkets))
+#' x <- vars::VAR(freeny[-2])
+#' ggvar_fit(x)
+#' ggvar_fit_colored(x)
 #'
 #' @export
 ggvar_fit <- function(
@@ -61,7 +61,7 @@ ggvar_fit <- function(
 #' @rdname ggvar_fit
 #' @export
 ggvar_fit_colored <- function(
-    x, compare = TRUE, series = NULL, index = 1:x$obs,
+    x, compare = TRUE, series = NULL, index = 1:x$totobs,
     palette = NULL, linetypes = c("solid", "dashed"), ...
   ) {
   # Initial tests:

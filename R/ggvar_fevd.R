@@ -14,7 +14,7 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_fevd(vars::VAR(EuStockMarkets), n.ahead = 10)
+#' ggvar_fevd(vars::VAR(freeny[-2]), n.ahead = 10)
 #'
 #' @export
 ggvar_fevd <- function(
@@ -25,12 +25,17 @@ ggvar_fevd <- function(
   test$class_arg(x, c("varfevd", "varest"))
   test$series(series, x)
   test$categorical_arg(geom, c("bar", "area", "line"))
-  stopifnot("`n.ahead` must be supplied with `x` of class 'varest'" = inherits(x, "varest") && is.numeric(n.ahead))
 
   # Create values:
-  series <- series %||% names(x$varresult)
-  palette <- get_pallete(palette, length(series))
-  if (is.null(n.ahead) && inherits(x, "varfevd")) n.ahead <- nrow(x[[1]])
+  series <- series %||% if (inherits(x, "varest")) names(x$varresult) else names(x)
+  palette <- get_pallete(palette, if (inherits(x, "varest")) x$K else length(x))
+
+  if (inherits(x, "varest")) {
+    if (is.null(n.ahead) || n.ahead == 0) stop("`n.ahead` must be supplied with `x` of class 'varest'")
+  } else if (inherits(x, "varfevd")) {
+    if (is.numeric(n.ahead)) warning("`n.ahead` suplied with 'varfevd' x was set to `nrow(x[[1]])`")
+    n.ahead <- nrow(x[[1]])
+  }
 
   ggplot_add <- list(
     switch(
@@ -48,8 +53,8 @@ ggvar_fevd <- function(
 
   data <- fevd %>%
     purrr::imap_dfr(~ as.data.frame(.x) %>% dplyr::mutate(equation = .y, lead = 1:nrow(.))) %>%
-    tidyr::pivot_longer(-c(.data$equation, .data$lead), names_to = "serie", values_to = "value") %>%
-    dplyr::filter(equation %in% series & serie %in% series)
+    tidyr::pivot_longer(-c("equation", "lead"), names_to = "serie", values_to = "value") %>%
+    dplyr::filter(equation %in% series)
 
   # Graph:
   ggplot(data, aes(.data$lead, .data$value)) +

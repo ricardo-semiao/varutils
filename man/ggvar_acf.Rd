@@ -15,6 +15,7 @@ ggvar_acf(
   palette = c("black", "black", "blue", NA),
   scales = "fixed",
   ncol = 1,
+  alpha = 0.5,
   ...
 )
 
@@ -28,7 +29,8 @@ ggvar_ccf(
   geom = "segment",
   palette = c("black", "black", "blue", NA),
   scales = "fixed",
-  independent = "y",
+  independent = "none",
+  alpha = 0.5,
   ...
 )
 }
@@ -51,6 +53,8 @@ ggvar_ccf(
 
 \item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
+\item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_ribbon}.}
+
 \item{...}{Additional arguments passed to the ggplot geom defined by \code{geom}.}
 
 \item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
@@ -64,8 +68,8 @@ An object of class \code{ggplot}.
 \code{ggvar_acf} plots the result of a \link[stats]{acf} call for every series, using ggplot and \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the cross correlations (and similars) between the series, using ggplot in a matrix fashion with \link[ggplot2]{facet_grid}.
 }
 \examples{
-ggvar_acf(EuStockMarkets)
-ggvar_ccf(EuStockMarkets)
-ggvar_acf(vars::VAR(EuStockMarkets))
+ggvar_acf(freeny[-2])
+ggvar_ccf(freeny[-2])
+ggvar_acf(vars::VAR(freeny[-2]))
 
 }

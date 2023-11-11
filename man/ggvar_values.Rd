@@ -39,8 +39,8 @@ An object of class \code{ggplot}.
 Plots the historic values of variables in a dataset, or residuals of a VAR model. \code{ggvar_values} Plots each series in a facet. \code{ggvar_values_colored} plots all in the same graph, each with a different color.
 }
 \examples{
-ggvar_values(EuStockMarkets)
-ggvar_values_colored(EuStockMarkets)
-ggvar_values(vars::VAR(EuStockMarkets))
+ggvar_values(freeny[-2])
+ggvar_values_colored(freeny[-2])
+ggvar_values(vars::VAR(freeny[-2]))
 
 }

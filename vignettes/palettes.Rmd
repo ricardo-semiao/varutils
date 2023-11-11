@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Many `varutils` give the change for the user to change the colors of the graph trough the argument `palette`. This argument can have multiple specifications. It can be:
+Many `varutils` give the change for the user to change the colors of the graph trough the argument `palette`. This argument can have multiple specifications:
 
 - `NULL`, for the default ggplot colors
 - A palette from a package, in the format `pgk::palette_name`

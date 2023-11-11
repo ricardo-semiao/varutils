@@ -21,7 +21,7 @@ ggvar_fit_colored(
   x,
   compare = TRUE,
   series = NULL,
-  index = 1:x$obs,
+  index = 1:x$totobs,
   palette = NULL,
   linetypes = c("solid", "dashed"),
   ...
@@ -53,8 +53,8 @@ An object of class \code{ggplot}.
 Plots fitted values of a VAR model, versus the actual values. \code{ggvar_fit} Plots each series in a facet. \code{ggvar_fit_colored} plots all in the same graph, each with a different color.
 }
 \examples{
-x <- vars::VAR(EuStockMarkets)
-ggvar_fit(x, index = stats::time(EuStockMarkets))
-ggvar_fit_colored(x, index = stats::time(EuStockMarkets))
+x <- vars::VAR(freeny[-2])
+ggvar_fit(x)
+ggvar_fit_colored(x)
 
 }

@@ -9,7 +9,7 @@ setup_data_ggvar_values <- function(data, series, index){
   data %>%
     dplyr::select(dplyr::all_of(series)) %>%
     dplyr::mutate(index = index) %>%
-    tidyr::pivot_longer(-.data$index, values_to = "value", names_to = "serie")
+    tidyr::pivot_longer(-c("index"), values_to = "value", names_to = "serie")
 }
 
 #' Plot Values of Dataset or VAR Residuals
@@ -27,9 +27,9 @@ setup_data_ggvar_values <- function(data, series, index){
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_values(EuStockMarkets)
-#' ggvar_values_colored(EuStockMarkets)
-#' ggvar_values(vars::VAR(EuStockMarkets))
+#' ggvar_values(freeny[-2])
+#' ggvar_values_colored(freeny[-2])
+#' ggvar_values(vars::VAR(freeny[-2]))
 #'
 #' @export
 ggvar_values <- function(
@@ -37,6 +37,7 @@ ggvar_values <- function(
     palette = c("black"), scales = "fixed", ncol = 1, ...
   ){
   # Initial tests:
+  x <- test$dataset_arg(x)
   setup_tests_ggvar_values(x, series)
 
   # Create values:
@@ -52,7 +53,7 @@ ggvar_values <- function(
   series <- series %||% colnames(data)
   palette <- get_pallete(palette, 1)
 
-  test$index(index, x, n = nrow(data))
+  test$index(index, n = nrow(data), "'obs' of `x` in varest form")
 
   # Data:
   data_values <- setup_data_ggvar_values(data, series, index)
@@ -71,6 +72,7 @@ ggvar_values_colored <- function(
     palette = NULL, ...
   ) {
   # Initial tests:
+  x <- test$dataset_arg(x)
   setup_tests_ggvar_values(x, series)
 
   # Create values:
@@ -86,7 +88,7 @@ ggvar_values_colored <- function(
   series <- series %||% colnames(data)
   palette <- get_pallete(palette, length(series))
 
-  test$index(index, x, n = nrow(data))
+  test$index(index, n = nrow(data))
 
   # Data:
   data_values <- setup_data_ggvar_values(data, series, index)

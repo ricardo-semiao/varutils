@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' ggvar_dispersion(vars::VAR(EuStockMarkets))
+#' ggvar_dispersion(vars::VAR(freeny[-2]))
 ggvar_dispersion <- function(
     x, series = NULL,
     palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...

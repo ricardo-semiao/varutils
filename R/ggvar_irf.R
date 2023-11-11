@@ -16,49 +16,48 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_irf(vars::VAR(EuStockMarkets), n.ahead = 10)
+#' ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10)
 #'
 #' @export
 ggvar_irf <- function(
     x, n.ahead = NULL, series_impulse = NULL, series_response = NULL,
     facet = "ggplot",
     ci = 0.95, ...,
-    palette = c("black", "blue", "gray"), scales = "fixed", independent = "y"
+    palette = c("black", "blue", "gray"), scales = "fixed", independent = "none"
   ){
   # Initial tests:
   test$class_arg(x, c("varirf", "varest"))
   test$series(series_impulse, x, "impulse")
   test$series(series_response, x, "response")
   test$categorical_arg(facet, c("ggplot", "ggh4x"))
-  stopifnot("`n.ahead` must be supplied with `x` of class 'varest'" = inherits(x, "varest") && is.numeric(n.ahead))
+  test$interval_arg(ci, 0, 1, FALSE)
+  stopifnot("`n.ahead` must be supplied with `x` of class 'varest'" = inherits(x, "varirf") || is.numeric(n.ahead))
 
   # Create values:
   series_impulse <- series_impulse %||% if (inherits(x, "varest")) names(x$varresult) else x$impulse
   series_response <- series_response %||% if (inherits(x, "varest")) names(x$varresult) else x$response
   palette <- get_pallete(palette, max(length(series_impulse), length(series_response)))
 
-  boot <- !isFALSE(ci)
-  if (facet == "ggplot")
-
   ggplot_add <- list(
-    if (boot) { ggplot2::geom_ribbon(fill = palette[3], color = palette[2], linetype = 2) },
-    define_facet(facet, effect_of, effect_on, scales, independent)
+    if (!isFALSE(ci)) { ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
+                                             fill = palette[3], color = palette[2], linetype = 2) },
+    define_facet(facet, "effect_of", "effect_on", scales, independent)
   )
 
   # Data - irf:
-  irf <- if (inherits(x, "varest")) vars::irf(x, series_impulse, series_response, n.ahead, boot = boot, ci = ci, ...) else x
+  irf <- if (inherits(x, "varest")) vars::irf(x, series_impulse, series_response, n.ahead, boot = !isFALSE(ci), ci = ci, ...) else x
 
   data <- irf %>%
-    magrittr::extract(1:3) %>%
+    magrittr::extract(if (!isFALSE(ci)) 1:3 else 1) %>%
     purrr::imap_dfr(function(x, name) {
       data.frame(serie = name,
                  purrr::imap_dfr(x, ~ data.frame(effect_on = .y, lead = 1:nrow(.x), .x)))
     }) %>%
-    tidyr::pivot_longer(-c(serie, effect_on, lead), names_to = "effect_of", values_to = "value") %>%
-    tidyr::pivot_wider(names_from = serie, values_from = value)
+    tidyr::pivot_longer(-c("serie", "effect_on", "lead"), names_to = "effect_of", values_to = "value") %>%
+    tidyr::pivot_wider(names_from = "serie", values_from = "value")
 
   # Graph:
-  ggplot(data, aes(.data$lead, .data$irf, ymin = .data$Lower, ymax = .data$Upper)) +
+  ggplot(data, aes(.data$lead, .data$irf)) +
     ggplot_add +
     ggplot2::geom_line(color = palette[1]) +
     ggplot2::geom_hline(yintercept = 0) +

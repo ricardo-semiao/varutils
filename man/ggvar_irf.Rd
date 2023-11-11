@@ -14,7 +14,7 @@ ggvar_irf(
   ...,
   palette = c("black", "blue", "gray"),
   scales = "fixed",
-  independent = "y"
+  independent = "none"
 )
 }
 \arguments{
@@ -45,6 +45,6 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{irf} call.
 }
 \examples{
-ggvar_irf(vars::VAR(EuStockMarkets), n.ahead = 10)
+ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10)
 
 }

@@ -1,8 +1,9 @@
 #' @noRd
-setup_tests_ggvar_acf <- function(x, series, geom, facet = NULL) {
+setup_tests_ggvar_acf <- function(x, series, ci, geom, facet = NULL) {
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   test$series(series, x)
   test$categorical_arg(geom, c("segment", "area"))
+  test$interval_arg(ci, 0, 1, FALSE)
   if (is.null(facet)) NULL else test$categorical_arg(facet, c("ggplot", "ggh4x"))
 }
 
@@ -21,24 +22,26 @@ setup_tests_ggvar_acf <- function(x, series, geom, facet = NULL) {
 #' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
 #' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
 #' @param independent For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.
+#' @param alpha A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_ribbon}.
 #' @param ... Additional arguments passed to the ggplot geom defined by \code{geom}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_acf(EuStockMarkets)
-#' ggvar_ccf(EuStockMarkets)
-#' ggvar_acf(vars::VAR(EuStockMarkets))
+#' ggvar_acf(freeny[-2])
+#' ggvar_ccf(freeny[-2])
+#' ggvar_acf(vars::VAR(freeny[-2]))
 #'
 #' @export
 ggvar_acf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
     geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, ...
+    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, alpha = 0.5, ...
   ){
   # Initial tests:
-  setup_tests_ggvar_acf(x, series, geom)
+  x <- test$dataset_arg(x)
+  setup_tests_ggvar_acf(x, series, ci, geom)
 
   # Create values:
   if (inherits(x, c("varest"))) {
@@ -55,7 +58,6 @@ ggvar_acf <- function(
              "covariance" = paste("Auto-covariance of", title_add),
              "partial" = paste("Auto-partial-correlation of", title_add))
 
-  interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
   lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
   lag.min <- if (type == "partial") 1 else 0
 
@@ -63,9 +65,12 @@ ggvar_acf <- function(
     switch(
       geom,
       "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
-      "area" = list(ggplot2::geom_area(aes(ymin = 0, ymax = .data$values), fill = palette[1], ...))
+      "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
     ),
-    if (!isFALSE(ci)) { ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[2], fill = palette[4]) }
+    if (!isFALSE(ci)) {
+      interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
+      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
+    }
   )
 
   # Data
@@ -81,7 +86,7 @@ ggvar_acf <- function(
 
   ggplot(data_acf, aes(.data$lag, .data$value)) +
     ggplot_add +
-    ggplot2::geom_hline(yintercept = 0, color = palette[3]) +
+    ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
     ggplot2::facet_wrap(vars(serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = title[type], x = "Lags", y = "Values")
 }
@@ -92,10 +97,11 @@ ggvar_ccf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
     facet = "ggplot", geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "y", ...
+    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "none", alpha = 0.5, ...
 ){
   # Initial tests:
-  setup_tests_ggvar_acf(x, series, geom, facet)
+  x <- test$dataset_arg(x)
+  setup_tests_ggvar_acf(x, series, ci, geom, facet)
 
   # Create values:
   if (inherits(x, "varest")) {
@@ -112,17 +118,20 @@ ggvar_ccf <- function(
              "covariance" = paste("Cross-covariance of", title_add),
              "partial" = paste("Cross-partial-correlation of", title_add))
 
-  interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
   lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
   lag.min <- if (type == "partial") 1 else 0
 
   ggplot_add <- list(
-    if (geom == "area") {
-      ggplot2::geom_area(aes(ymin = 0, ymax = .data$value), fill = palette[1], ...)
-    } else if (geom == "segment") {
-      ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)
-    } else {stop("Invalid `geom` argument.")},
-    define_facet(facet, var1, var2, scales, independent)
+    switch(
+      geom,
+      "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
+      "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
+    ),
+    if (!isFALSE(ci)) {
+      interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
+      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
+    },
+    define_facet(facet, "var_row", "var_col", scales, independent)
   )
 
   # Data
@@ -132,12 +141,11 @@ ggvar_ccf <- function(
     purrr::pluck("acf") %>%
     purrr::array_tree(3) %>%
     purrr::map2_dfr(series, ~ data.frame(.y, lag.min:lag.max, .x)) %>%
-    stats::setNames(c("var1", "lag", series)) %>%
-    tidyr::pivot_longer(dplyr::all_of(series), names_to = "var2", values_to = "value")
+    stats::setNames(c("var_row", "lag", series)) %>%
+    tidyr::pivot_longer(dplyr::all_of(series), names_to = "var_col", values_to = "value")
 
   ggplot(data_acf, aes(.data$lag, .data$value)) +
-    ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
-    ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4]) +
     ggplot_add +
+    ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
     ggplot2::labs(title = title[type], x = "Lags", y = "Values")
 }

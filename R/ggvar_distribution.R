@@ -7,21 +7,22 @@
 #' @param plot_normal Logical, whether or not the normal curve should be plotted.
 #' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
 #' @param bins An integer. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.
-#' @param size An integer. The size of the normal curve line, passed to \link[ggplot2]{geom_line}.
+#' @param linewidth An integer. The linewidth of the normal curve line, passed to \link[ggplot2]{geom_line}.
 #' @param ... Additional arguments passed to \link[ggplot2]{geom_histogram}.
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_distribution(vars::VAR(EuStockMarkets))
+#' ggvar_distribution(vars::VAR(freeny[-2]))
 #'
 #' @export
 ggvar_distribution = function(
     x, series = NULL, plot_normal = TRUE,
-    palette = c("grey", "black"), bins = 30, size = 1, ...
+    palette = c("grey", "black"), bins = 30, linewidth = 1, ...
   ) {
   # Initial tests:
   test$class_arg(x, c("data.frame", "matrix", "varest"))
+  x <- test$dataset_arg(x)
   test$series(series, x)
   test$boolean_arg(plot_normal)
 
@@ -42,16 +43,21 @@ ggvar_distribution = function(
 
   data_histogram <- tidyr::pivot_longer(data_resid, dplyr::everything(), names_to = "serie", values_to = "residual")
 
-  data_density <- purrr::imap_dfr(data_resid, function(col, varname){
-    tibble::tibble(residual = seq(min(col), max(col), length = 200),
-                   serie = varname,
-                   density = stats::dnorm(residual, sd = stats::sd(col)))
-  })
+  if (plot_normal) {
+    data_density <- purrr::imap_dfr(data_resid, function(col, varname){
+      tibble::tibble(residual = seq(min(col), max(col), length = 200),
+                     serie = varname,
+                     density = stats::dnorm(residual, sd = stats::sd(col)))
+    })
+    ggplot_add <- list(ggplot2::geom_line(aes(y = density, color = "Normal curve"), data = data_density, linewidth = linewidth))
+  } else {
+    ggplot_add <- list(NULL)
+  }
 
   # Graph:
   ggplot(data_histogram, aes(x = residual)) +
     ggplot2::geom_histogram(aes(y = ggplot2::after_stat(density)), fill = palette[1], bins = bins, ...) +
-    ggplot2::geom_line(aes(y = density, color = "Normal curve"), data = data_density, size = size) +
+    ggplot_add +
     ggplot2::scale_color_manual(values = palette[2], name = "Legend") +
     ggplot2::facet_wrap(vars(.data$serie), ncol = 1, scales = "free") +
     ggplot2::theme(legend.position = "bottom") +

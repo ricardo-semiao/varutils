@@ -39,6 +39,6 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{fevd} call.
 }
 \examples{
-ggvar_fevd(vars::VAR(EuStockMarkets), n.ahead = 10)
+ggvar_fevd(vars::VAR(freeny[-2]), n.ahead = 10)
 
 }

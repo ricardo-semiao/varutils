@@ -53,60 +53,83 @@ create_sec_axis <- function() {
 }
 
 
-define_facet <- function(facet, var1, var2, scales, independent) {
+define_facet <- function(facet, var_row, var_col, scales, independent) {
     if (facet == "ggh4x") {
       if (!rlang::is_installed("ggh4x")) {
         warning("Package ggh4x is not installed. Coercing `facet = 'ggplot'`.")
         facet <- "ggplot"
       } else {
-        ggh4x::facet_grid2(!!var1 ~ !!var2, scales = scales, independent = independent)
+        ggh4x::facet_grid2(stats::reformulate(var_row, var_col), scales = scales, independent = independent)
       }
     } else if (facet == "ggplot") {
-      ggplot2::facet_grid(vars(!!rlang::ensym(var1)), vars(!!rlang::ensym(var2)), scales = scales)
+      ggplot2::facet_grid(stats::reformulate(var_row, var_col), scales = scales)
     } else { stop("Invalid `facet` argument.") }
 }
 
 
-
 # Test helpers ------------------------------------------------------------
 get_names <- function(x, type) {
+  if (inherits(x, c("data.frame", "matrix"))) return(colnames(x))
   if (inherits(x, "varest")) return(names(x$varresult))
   if (inherits(x, "varprd")) return(names(x$fcst))
-  if (inherits(x, "varstab")) return(x$names)
+  if (inherits(x, "varstabil")) return(x$names)
   if (inherits(x, "varfevd")) return(names(x))
   if (inherits(x, "varirf")) return(x[[type]])
 }
 
 test <- list(
   class_arg = function(arg, classes) {
+    arg_name <- rlang::ensym(arg)
     if (!inherits(arg, classes)) {
-      stop(paste0("`", rlang::ensym(arg), "` must inherit one of ", paste("'", options, "'", collapse = ", ")))
+      stop(paste0("`", arg_name, "` must inherit one of ", paste0("'", classes, "'", collapse = ", ")))
     }
   },
   series = function(arg, x, type = NULL) {
+    arg_name <- rlang::ensym(arg)
     names <- get_names(x, type)
     if (!inherits(arg, c("character", "NULL"))) {
-      stop(paste0("`", rlang::ensym(arg), "` must inherit one of 'character', 'NULL'"))
-    } else if (!all(arg %in% names)) {
-      stop(paste0("`", rlang::ensym(arg), "` must be one of ", paste("'", names, "'", collapse = ", ")))
+      stop(paste0("`", arg_name, "` must inherit one of 'character', 'NULL'"))
+    }
+    if (!all(arg %in% names)) { #!is.null(arg) &&
+      stop(paste0("`", arg_name, "` must be one of ", paste0("'", names, "'", collapse = ", ")))
     }
   },
-  index = function(index, x, n) {
+  index = function(index, n, alternative = NULL) {
+    required <- alternative %||% deparse(rlang::enexpr(n))
     stopifnot("`index` of wrong class" = is.null(index) || is.character(index) || is.double(index) || is.integer(index),
               "`index` musn't have duplicated entries" = !anyDuplicated(index))
     if (length(index) != n) {
-      stop(paste0("`index` must have a length of ", rlang::enexpr(n)))
+      stop(paste0("`index` must have a length of ", required))
     }
   },
   categorical_arg = function(arg, options) {
+    arg_name <- rlang::ensym(arg)
     if (!(arg %in% options)) {
-      stop(paste0("`", rlang::ensym(arg), "` must be one of", paste("'", options, "'", collapse = ", ")))
+      stop(paste0("`", arg_name, "` must be one of", paste0("'", options, "'", collapse = ", ")))
     }
   },
   boolean_arg = function(arg) {
+    arg_name <- rlang::ensym(arg)
     if (!(isTRUE(arg) || isFALSE(arg))) {
-      stop(paste0("`", rlang::ensym(arg), "` must be `TRUE` or `FALSE`"))
+      stop(paste0("`", arg_name, "` must be `TRUE` or `FALSE`"))
     }
+  },
+  interval_arg = function(arg, lower, upper, alternative = NULL) {
+    arg_name <- rlang::ensym(arg)
+    if (!identical(arg, alternative) && (!is.numeric(arg) || (arg <= lower || upper <= arg))) {
+      stop(paste0("`", arg_name, "` must be ", alternative, " or ", lower, " < x < ", upper))
+    }
+  },
+  dataset_arg = function(arg) {
+    arg_name <- rlang::ensym(arg)
+    if (inherits(arg, c("data.frame", "matrix"))) {
+      numeric_cols <- sapply(arg, is.numeric)
+      if (!all(numeric_cols)) {
+        warning(paste0("Ignoring non numeric columns in `", arg_name, "`"))
+        return(arg[,numeric_cols])
+      }
+    }
+    return(arg)
   }
 )
 
