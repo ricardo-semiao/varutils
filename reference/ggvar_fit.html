@@ -73,7 +73,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  compare <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  index <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">x</span><span class="op">$</span><span class="va">obs</span>,</span>
+<span>  index <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">x</span><span class="op">$</span><span class="va">totobs</span>,</span>
 <span>  palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  linetypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"solid"</span>, <span class="st">"dashed"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -127,10 +127,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">vars</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vars/man/VAR.html" class="external-link">VAR</a></span><span class="op">(</span><span class="va">EuStockMarkets</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">ggvar_fit</span><span class="op">(</span><span class="va">x</span>, index <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/time.html" class="external-link">time</a></span><span class="op">(</span><span class="va">EuStockMarkets</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">vars</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vars/man/VAR.html" class="external-link">VAR</a></span><span class="op">(</span><span class="va">freeny</span><span class="op">[</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ggvar_fit</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvar_fit-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">ggvar_fit_colored</span><span class="op">(</span><span class="va">x</span>, index <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/time.html" class="external-link">time</a></span><span class="op">(</span><span class="va">EuStockMarkets</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ggvar_fit_colored</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvar_fit-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
