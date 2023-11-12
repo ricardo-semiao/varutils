@@ -12,10 +12,10 @@
 #'
 #' @return An object of class \code{ggplot}.
 #'
-#' @export
-#'
 #' @examples
-#' ggvar_dispersion(vars::VAR(freeny[-2]))
+#' ggvar_dispersion(vars::VAR(freeny[-2]), scales = "free_y")
+#'
+#' @export
 ggvar_dispersion <- function(
     x, series = NULL,
     palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...) {

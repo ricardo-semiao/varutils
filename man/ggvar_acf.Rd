@@ -68,8 +68,8 @@ An object of class \code{ggplot}.
 \code{ggvar_acf} plots the result of a \link[stats]{acf} call for every series, using ggplot and \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the cross correlations (and similars) between the series, using ggplot in a matrix fashion with \link[ggplot2]{facet_grid}.
 }
 \examples{
-ggvar_acf(freeny[-2])
-ggvar_ccf(freeny[-2])
-ggvar_acf(vars::VAR(freeny[-2]))
+ggvar_acf(freeny[-2], scales = "free_y")
+ggvar_ccf(freeny[-2], scales = "free_y")
+ggvar_acf(vars::VAR(freeny[-2]), scales = "free_y")
 
 }

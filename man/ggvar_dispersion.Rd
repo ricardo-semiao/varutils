@@ -36,5 +36,6 @@ An object of class \code{ggplot}.
 Plots a scatterplot of the residuals versus fitted values of a VAR model, using ggplot2.
 }
 \examples{
-ggvar_dispersion(vars::VAR(freeny[-2]))
+ggvar_dispersion(vars::VAR(freeny[-2]), scales = "free_y")
+
 }

@@ -54,7 +54,7 @@ Plots fitted values of a VAR model, versus the actual values. \code{ggvar_fit} P
 }
 \examples{
 x <- vars::VAR(freeny[-2])
-ggvar_fit(x)
-ggvar_fit_colored(x)
+ggvar_fit(x, scales = "free_y")
+ggvar_fit_colored(x, scales = "free_y")
 
 }

@@ -61,5 +61,5 @@ ggvar_fevd <- function(
     ggplot_add +
     ggplot2::facet_wrap(vars(.data$equation), scales = scales, ncol = ncol) +
     ggplot2::scale_fill_manual(values = palette) +
-    ggplot2::labs(title = "VAR Forecast Error Variance Decomposition", x = "Forecast horizon", y = "Variance contribution")
+    ggplot2::labs(title = "VAR FEVD", x = "Forecast horizon", y = "Variance contribution", fill = "Serie")
 }

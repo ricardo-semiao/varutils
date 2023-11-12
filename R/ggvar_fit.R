@@ -32,8 +32,8 @@ setup_data_ggvar_fit <- function(x, compare, series, index) {
 #'
 #' @examples
 #' x <- vars::VAR(freeny[-2])
-#' ggvar_fit(x)
-#' ggvar_fit_colored(x)
+#' ggvar_fit(x, scales = "free_y")
+#' ggvar_fit_colored(x, scales = "free_y")
 #'
 #' @export
 ggvar_fit <- function(
@@ -54,7 +54,7 @@ ggvar_fit <- function(
     ggplot2::geom_line(aes(linetype = .data$type), color = palette, ...) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = "Fitted VAR Values") +
-    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none")
+    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none", name = "Type")
 }
 
 #' @rdname ggvar_fit
@@ -76,6 +76,6 @@ ggvar_fit_colored <- function(
   ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(color = .data$serie, linetype = .data$type), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none") +
-    ggplot2::labs(title = "Fitted VAR Values", x = "Index", y = "Fitted")
+    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none", name = "Type") +
+    ggplot2::labs(title = "Fitted VAR Values", x = "Index", y = "Fitted", color = "Serie")
 }

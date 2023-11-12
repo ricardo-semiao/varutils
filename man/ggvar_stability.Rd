@@ -36,6 +36,6 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{stability} call. Confidence intevals are calculated using \link[strucchange]{boundary}.
 }
 \examples{
-ggvar_stability(vars::VAR(freeny[-2]))
+ggvar_stability(vars::VAR(freeny[-2]), scales = "free_y")
 
 }

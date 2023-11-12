@@ -16,7 +16,7 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10)
+#' ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10, scales = "free_y")
 #'
 #' @export
 ggvar_irf <- function(

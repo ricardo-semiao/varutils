@@ -27,9 +27,9 @@ setup_data_ggvar_values <- function(data, series, index) {
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_values(freeny[-2])
-#' ggvar_values_colored(freeny[-2])
-#' ggvar_values(vars::VAR(freeny[-2]))
+#' ggvar_values(freeny[-2], scales = "free_y")
+#' ggvar_values_colored(freeny[-2], scales = "free_y")
+#' ggvar_values(vars::VAR(freeny[-2]), scales = "free_y")
 #'
 #' @export
 ggvar_values <- function(
@@ -93,7 +93,7 @@ ggvar_values_colored <- function(
 
   # Graph:
   ggplot(data_values, aes(.data$index, .data$value)) +
-    ggplot2::geom_line(aes(color = serie), ...) +
+    ggplot2::geom_line(aes(color = .data$serie), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::labs(title = title, x = "Index", y = "Values")
+    ggplot2::labs(title = title, x = "Index", y = "Values", color = "Serie")
 }

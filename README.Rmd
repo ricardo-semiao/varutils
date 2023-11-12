@@ -43,7 +43,6 @@ devtools::install_github("ricardo-semiao/varutils")
 
 ## Upcoming changes
 
-* Define "labs" for plots legends.
 * More thorough tests:
   * What errors to expect in `expect_error` calls.
   * Directly test for elements of the ggplots returned by functions.
@@ -52,9 +51,9 @@ devtools::install_github("ricardo-semiao/varutils")
 * Resolve CRAN notes related to tidy evaluation.
 * Reorganization of "# Initial tests" and "# Create values" sections:
   * Rethink the `test` functions list scheme.
-* Standardization to tidyverse style code, possibly using the "styler" package.
+  * Standardization to rlang errors.
 * Add more info/sections to functions documentation.
-* Rethink how to pass several specifications to ggplot.
+* Rethink how to pass the large number of arguments to ggplot.
 
 
 ## Aditional informations

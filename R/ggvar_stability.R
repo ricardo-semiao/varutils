@@ -13,7 +13,7 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_stability(vars::VAR(freeny[-2]))
+#' ggvar_stability(vars::VAR(freeny[-2]), scales = "free_y")
 #'
 #' @export
 ggvar_stability <- function(

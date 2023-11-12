@@ -45,6 +45,6 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{irf} call.
 }
 \examples{
-ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10)
+ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10, scales = "free_y")
 
 }

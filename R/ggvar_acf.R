@@ -28,9 +28,9 @@ setup_tests_ggvar_acf <- function(x, series, ci, geom, facet = NULL) {
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_acf(freeny[-2])
-#' ggvar_ccf(freeny[-2])
-#' ggvar_acf(vars::VAR(freeny[-2]))
+#' ggvar_acf(freeny[-2], scales = "free_y")
+#' ggvar_ccf(freeny[-2], scales = "free_y")
+#' ggvar_acf(vars::VAR(freeny[-2]), scales = "free_y")
 #'
 #' @export
 ggvar_acf <- function(
