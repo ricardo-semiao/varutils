@@ -70,6 +70,7 @@ ggvar_predict <- function(
   } else {
     data_test %>%
       as.data.frame() %>%
+      dplyr::select(all_of(series)) %>%
       dplyr::mutate(index = index) %>%
       tidyr::pivot_longer(-c("index"), values_to = "actual", names_to = "serie") %>%
       dplyr::full_join(data_pred, by = c("index", "serie")) %>%

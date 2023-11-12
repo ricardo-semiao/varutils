@@ -48,7 +48,7 @@ devtools::install_github("ricardo-semiao/varutils")
   * Directly test for elements of the ggplots returned by functions.
   * More tests specifically for `test_fun()`.
   * Add tests for "helper" functions.
-* Resolve CRAN notes related to tidy evaluation.
+* Resolve CRAN notes related to tidy evaluation, and [lintr](https://lintr.r-lib.org/) notes.
 * Reorganization of "# Initial tests" and "# Create values" sections:
   * Rethink the `test` functions list scheme.
   * Standardization to rlang errors.
@@ -61,5 +61,6 @@ devtools::install_github("ricardo-semiao/varutils")
 This package:
 
 * Follows the [tydiverse style guide](https://style.tidyverse.org/).
+  * Using the [styler](https://styler.r-lib.org/) and [lintr](https://lintr.r-lib.org/) packages for style consistency.
 * Uses [testthat](https://testthat.r-lib.org/) and [vdiffr](https://vdiffr.r-lib.org/) for automate tests.
 * Uses [rlang](https://rlang.r-lib.org/) frameworks for _tidy eval_ and _rlang errors_.
