@@ -18,8 +18,7 @@
 #' @export
 ggvar_distribution = function(
     x, series = NULL, plot_normal = TRUE,
-    palette = c("grey", "black"), bins = 30, linewidth = 1, ...
-  ) {
+    palette = c("grey", "black"), bins = 30, linewidth = 1, ...) {
   # Initial tests:
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   x <- test$dataset_arg(x)
@@ -44,10 +43,12 @@ ggvar_distribution = function(
   data_histogram <- tidyr::pivot_longer(data_resid, dplyr::everything(), names_to = "serie", values_to = "residual")
 
   if (plot_normal) {
-    data_density <- purrr::imap_dfr(data_resid, function(col, varname){
-      tibble::tibble(residual = seq(min(col), max(col), length = 200),
-                     serie = varname,
-                     density = stats::dnorm(residual, sd = stats::sd(col)))
+    data_density <- purrr::imap_dfr(data_resid, function(col, varname) {
+      tibble::tibble(
+        residual = seq(min(col), max(col), length = 200),
+        serie = varname,
+        density = stats::dnorm(residual, sd = stats::sd(col))
+      )
     })
     ggplot_add <- list(ggplot2::geom_line(aes(y = density, color = "Normal curve"), data = data_density, linewidth = linewidth))
   } else {

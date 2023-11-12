@@ -18,8 +18,7 @@
 #' ggvar_dispersion(vars::VAR(freeny[-2]))
 ggvar_dispersion <- function(
     x, series = NULL,
-    palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...
-  ) {
+    palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...) {
   # Initial tests:
   test$class_arg(x, c("varest"))
   test$series(series, x)

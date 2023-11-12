@@ -37,8 +37,7 @@ ggvar_acf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
     geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, alpha = 0.5, ...
-  ){
+    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, alpha = 0.5, ...) {
   # Initial tests:
   x <- test$dataset_arg(x)
   setup_tests_ggvar_acf(x, series, ci, geom)
@@ -54,21 +53,22 @@ ggvar_acf <- function(
 
   series <- series %||% colnames(data)
   palette <- get_pallete(palette, 4)
-  title <- c("correlation" = paste("Auto-correlation of", title_add),
-             "covariance" = paste("Auto-covariance of", title_add),
-             "partial" = paste("Auto-partial-correlation of", title_add))
+  title <- c(
+    "correlation" = paste("Auto-correlation of", title_add),
+    "covariance" = paste("Auto-covariance of", title_add),
+    "partial" = paste("Auto-partial-correlation of", title_add)
+  )
 
   lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
   lag.min <- if (type == "partial") 1 else 0
 
   ggplot_add <- list(
-    switch(
-      geom,
+    switch(geom,
       "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
       "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
     ),
     if (!isFALSE(ci)) {
-      interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
+      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(data))
       ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
     }
   )
@@ -77,12 +77,12 @@ ggvar_acf <- function(
   data_acf <- data %>%
     dplyr::select(dplyr::all_of(series)) %>%
     purrr::map2_dfr(series, function(x, name) {
-    tibble::tibble(
-      serie = name,
-      value = stats::acf(x, lag.max = lag.max, type = type, plot = FALSE) %>% purrr::pluck("acf") %>% `[`(,,1),
-      lag = lag.min:lag.max
-    )
-  })
+      tibble::tibble(
+        serie = name,
+        value = stats::acf(x, lag.max = lag.max, type = type, plot = FALSE) %>% purrr::pluck("acf") %>% `[`(, , 1),
+        lag = lag.min:lag.max
+      )
+    })
 
   ggplot(data_acf, aes(.data$lag, .data$value)) +
     ggplot_add +
@@ -97,8 +97,7 @@ ggvar_ccf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
     facet = "ggplot", geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "none", alpha = 0.5, ...
-){
+    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "none", alpha = 0.5, ...) {
   # Initial tests:
   x <- test$dataset_arg(x)
   setup_tests_ggvar_acf(x, series, ci, geom, facet)
@@ -114,21 +113,22 @@ ggvar_ccf <- function(
 
   series <- series %||% colnames(data)
   palette <- get_pallete(palette, 4)
-  title <- c("correlation" = paste("Cross-correlation of", title_add),
-             "covariance" = paste("Cross-covariance of", title_add),
-             "partial" = paste("Cross-partial-correlation of", title_add))
+  title <- c(
+    "correlation" = paste("Cross-correlation of", title_add),
+    "covariance" = paste("Cross-covariance of", title_add),
+    "partial" = paste("Cross-partial-correlation of", title_add)
+  )
 
   lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
   lag.min <- if (type == "partial") 1 else 0
 
   ggplot_add <- list(
-    switch(
-      geom,
+    switch(geom,
       "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
       "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
     ),
     if (!isFALSE(ci)) {
-      interval <- stats::qnorm((1 - ci)/2) / sqrt(nrow(data))
+      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(data))
       ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
     },
     define_facet(facet, "var_row", "var_col", scales, independent)

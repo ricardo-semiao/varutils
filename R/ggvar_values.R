@@ -1,11 +1,11 @@
 #' @noRd
-setup_tests_ggvar_values <- function(x, series){
+setup_tests_ggvar_values <- function(x, series) {
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   test$series(series, x)
 }
 
 #' @noRd
-setup_data_ggvar_values <- function(data, series, index){
+setup_data_ggvar_values <- function(data, series, index) {
   data %>%
     dplyr::select(dplyr::all_of(series)) %>%
     dplyr::mutate(index = index) %>%
@@ -34,8 +34,7 @@ setup_data_ggvar_values <- function(data, series, index){
 #' @export
 ggvar_values <- function(
     x, series = NULL, index = NULL,
-    palette = c("black"), scales = "fixed", ncol = 1, ...
-  ){
+    palette = c("black"), scales = "fixed", ncol = 1, ...) {
   # Initial tests:
   x <- test$dataset_arg(x)
   setup_tests_ggvar_values(x, series)
@@ -69,8 +68,7 @@ ggvar_values <- function(
 #' @export
 ggvar_values_colored <- function(
     x, series = NULL, index = NULL,
-    palette = NULL, ...
-  ) {
+    palette = NULL, ...) {
   # Initial tests:
   x <- test$dataset_arg(x)
   setup_tests_ggvar_values(x, series)

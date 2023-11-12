@@ -19,8 +19,7 @@
 #' @export
 ggvar_fevd <- function(
     x, n.ahead = NULL, series = NULL, geom = "bar",
-    palette = NULL, scales = "fixed", ncol = 1, ...
-  ) {
+    palette = NULL, scales = "fixed", ncol = 1, ...) {
   # Initial tests:
   test$class_arg(x, c("varfevd", "varest"))
   test$series(series, x)
@@ -38,12 +37,13 @@ ggvar_fevd <- function(
   }
 
   ggplot_add <- list(
-    switch(
-      geom,
+    switch(geom,
       "bar" = list(ggplot2::geom_bar(aes(fill = .data$serie), stat = "identity", ...)),
       "area" = list(ggplot2::geom_area(aes(fill = .data$serie), ...)),
-      "line" = list(ggplot2::geom_line(aes(color = .data$serie), ...),
-                    ggplot2::geom_point(aes(color = .data$serie), shape = 1)),
+      "line" = list(
+        ggplot2::geom_line(aes(color = .data$serie), ...),
+        ggplot2::geom_point(aes(color = .data$serie), shape = 1)
+      ),
       stop("Invalid `geom` argument. Choose 'bar', 'area' or 'line'")
     )
   )

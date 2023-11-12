@@ -20,14 +20,13 @@
 #'
 #' @examples
 #' ggvar_predict(stats::predict(vars::VAR(freeny[-2])))
-#' ggvar_predict(vars::VAR(freeny[-2][1:30,]), freeny[-2][31:39,])
+#' ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ])
 #'
 #' @export
 ggvar_predict <- function(
     x, data_test = NULL, n.ahead = NULL, series = NULL, index = 1:n.ahead,
     ci = 0.95, dumvar = NULL,
-    palette = c("blue", "black", "darkblue", "gray"), linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...
-  ) {
+    palette = c("blue", "black", "darkblue", "gray"), linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...) {
   # Initial tests:
   test$class_arg(x, c("varest", "varprd"))
   test$class_arg(data_test, c("data.frame", "matrix", "NULL"))
@@ -51,8 +50,9 @@ ggvar_predict <- function(
   series <- series %||% if (inherits(x, "varest")) names(x$varresult) else names(x$fcst)
 
   ggplot_add <- list(
-    if (!isFALSE(ci))  ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
-                                            fill = palette[4], color = palette[3], linetype = linetypes[1], alpha = alpha)
+    if (!isFALSE(ci)) ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
+      fill = palette[4], color = palette[3], linetype = linetypes[1], alpha = alpha
+    )
   )
 
   # Data - predictions:

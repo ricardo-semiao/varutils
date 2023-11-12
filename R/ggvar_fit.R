@@ -11,7 +11,7 @@ setup_data_ggvar_fit <- function(x, compare, series, index) {
   data.frame(index = index[(x$p + 1):x$totobs], Fitted.. = stats::fitted(x)) %>%
     `if`(compare, cbind(., Original.. = x$datamat[1:x$K]), .) %>%
     dplyr::select(c(index, dplyr::ends_with(series))) %>%
-    tidyr::pivot_longer(-index, names_to = c("type", "serie"), names_sep = "\\.\\.\\.",  values_to = "value")
+    tidyr::pivot_longer(-index, names_to = c("type", "serie"), names_sep = "\\.\\.\\.", values_to = "value")
 }
 
 #' Plot VAR Fitted Values
@@ -38,8 +38,7 @@ setup_data_ggvar_fit <- function(x, compare, series, index) {
 #' @export
 ggvar_fit <- function(
     x, compare = TRUE, series = NULL, index = 1:x$totobs,
-    palette = c("black"), linetypes = c("solid", "dashed"), scales = "fixed", ncol = 1, ...
-  ) {
+    palette = c("black"), linetypes = c("solid", "dashed"), scales = "fixed", ncol = 1, ...) {
   # Initial tests:
   setup_tests_ggvar_fit(x, compare, series, index)
 
@@ -62,8 +61,7 @@ ggvar_fit <- function(
 #' @export
 ggvar_fit_colored <- function(
     x, compare = TRUE, series = NULL, index = 1:x$totobs,
-    palette = NULL, linetypes = c("solid", "dashed"), ...
-  ) {
+    palette = NULL, linetypes = c("solid", "dashed"), ...) {
   # Initial tests:
   setup_tests_ggvar_fit(x, compare, series, index)
 

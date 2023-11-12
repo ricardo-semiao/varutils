@@ -19,8 +19,7 @@
 ggvar_stability <- function(
     x, series = NULL,
     ci = 0.95, ...,
-    palette = c("black", "blue"), scales = "fixed", ncol = 1
-  ) {
+    palette = c("black", "blue"), scales = "fixed", ncol = 1) {
   # Initial tests:
   test$class_arg(x, c("varest", "varstabil"))
   test$series(series, x)
@@ -34,9 +33,11 @@ ggvar_stability <- function(
   interval <- strucchange::boundary(stab[[1]], alpha = 1 - ci, alt.boundary = FALSE, functional = "max")
 
   data_stability <- purrr::imap_dfr(stab, function(x, name) {
-    data.frame(equation = name,
-               index = stats::time(x$process),
-               value = as.numeric(x$process))
+    data.frame(
+      equation = name,
+      index = stats::time(x$process),
+      value = as.numeric(x$process)
+    )
   })
 
   ggplot(data_stability, aes(index, value)) +

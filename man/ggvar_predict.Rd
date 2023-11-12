@@ -55,6 +55,6 @@ Plots the result of a \link[vars]{predict.varest} call. Has an option to overlay
 }
 \examples{
 ggvar_predict(stats::predict(vars::VAR(freeny[-2])))
-ggvar_predict(vars::VAR(freeny[-2][1:30,]), freeny[-2][31:39,])
+ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ])
 
 }

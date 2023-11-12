@@ -23,8 +23,7 @@ ggvar_irf <- function(
     x, n.ahead = NULL, series_impulse = NULL, series_response = NULL,
     facet = "ggplot",
     ci = 0.95, ...,
-    palette = c("black", "blue", "gray"), scales = "fixed", independent = "none"
-  ){
+    palette = c("black", "blue", "gray"), scales = "fixed", independent = "none") {
   # Initial tests:
   test$class_arg(x, c("varirf", "varest"))
   test$series(series_impulse, x, "impulse")
@@ -39,8 +38,11 @@ ggvar_irf <- function(
   palette <- get_pallete(palette, max(length(series_impulse), length(series_response)))
 
   ggplot_add <- list(
-    if (!isFALSE(ci)) { ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
-                                             fill = palette[3], color = palette[2], linetype = 2) },
+    if (!isFALSE(ci)) {
+      ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
+        fill = palette[3], color = palette[2], linetype = 2
+      )
+    },
     define_facet(facet, "effect_of", "effect_on", scales, independent)
   )
 
@@ -50,8 +52,10 @@ ggvar_irf <- function(
   data <- irf %>%
     magrittr::extract(if (!isFALSE(ci)) 1:3 else 1) %>%
     purrr::imap_dfr(function(x, name) {
-      data.frame(serie = name,
-                 purrr::imap_dfr(x, ~ data.frame(effect_on = .y, lead = 1:nrow(.x), .x)))
+      data.frame(
+        serie = name,
+        purrr::imap_dfr(x, ~ data.frame(effect_on = .y, lead = 1:nrow(.x), .x))
+      )
     }) %>%
     tidyr::pivot_longer(-c("serie", "effect_on", "lead"), names_to = "effect_of", values_to = "value") %>%
     tidyr::pivot_wider(names_from = "serie", values_from = "value")
