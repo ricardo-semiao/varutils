@@ -1,8 +1,10 @@
 # Tests:
 
 x_varest <- vars::VAR(EuStockMarkets)
-x_categorical <- 1; x_categorical2 <- 2
-x_interval <- 1; x_interval2 <- "2"
+x_categorical <- 1
+x_categorical2 <- 2
+x_interval <- 1
+x_interval2 <- "2"
 x_dataset <- data.frame(1, "a")
 
 test_that("series test works", {

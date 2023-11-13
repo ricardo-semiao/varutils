@@ -9,7 +9,7 @@ ggvar_predict(
   data_test = NULL,
   n.ahead = NULL,
   series = NULL,
-  index = 1:n.ahead,
+  index = NULL,
   ci = 0.95,
   dumvar = NULL,
   palette = c("blue", "black", "darkblue", "gray"),

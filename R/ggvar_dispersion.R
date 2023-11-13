@@ -1,3 +1,14 @@
+#' @noRd
+setup_ggvar_dispersion <- function(x, series, palette) {
+  test$class_arg(x, c("varest"))
+  test$series(series, x)
+
+  list(
+    series = series %||% get_names(x),
+    palette = get_pallete(palette, 2)
+  )
+}
+
 #' Plot VAR Residuals Dispersion
 #'
 #' Plots a scatterplot of the residuals versus fitted values of a VAR model, using ggplot2.
@@ -18,24 +29,30 @@
 #' @export
 ggvar_dispersion <- function(
     x, series = NULL,
-    palette = c("black", "black"), scales = "fixed", ncol = 1, alpha = 0.5, ...) {
-  # Initial tests:
-  test$class_arg(x, c("varest"))
-  test$series(series, x)
+    palette = c("black", "black"),
+    scales = "fixed", ncol = 1, alpha = 0.5, ...) {
+  # Setup:
+  setup <- setup_ggvar_dispersion(x, series, palette)
+  reassign <- c("series", "palette")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  palette <- get_pallete(palette, 2)
-  series <- series %||% names(x$varresult)
-
-  # Data - fitted and residuals:
-  data <- data.frame(residual.. = stats::residuals(x), fitted.. = stats::fitted(x)) %>%
+  # Data:
+  data <- data.frame(
+    residual.. = stats::residuals(x),
+    fitted.. = stats::fitted(x)
+  ) %>%
     dplyr::select(dplyr::ends_with(series)) %>%
-    tidyr::pivot_longer(dplyr::everything(), names_sep = "\\.\\.\\.", names_to = c(".value", "serie"))
+    tidyr::pivot_longer(dplyr::everything(),
+      names_sep = "\\.\\.\\.",
+      names_to = c(".value", "serie")
+    )
 
   # Graph:
   ggplot(data, aes(.data$fitted, .data$residual)) +
     ggplot2::geom_point(color = palette[1], alpha = alpha, ...) +
     ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = "VAR Residuals Dispersion", x = "Fitted", y = "Residuals")
+    ggplot2::labs(
+      title = "VAR Residuals Dispersion", x = "Fitted", y = "Residuals"
+    )
 }

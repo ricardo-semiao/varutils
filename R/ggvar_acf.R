@@ -1,10 +1,33 @@
 #' @noRd
-setup_tests_ggvar_acf <- function(x, series, ci, geom, facet = NULL) {
+setup_ggvar_acf <- function(
+    x, series, ci, type, lag.max,
+    geom, palette, facet = NULL) {
+  x <- test$dataset_arg(x)
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   test$series(series, x)
   test$categorical_arg(geom, c("segment", "area"))
   test$interval_arg(ci, 0, 1, FALSE)
-  if (is.null(facet)) NULL else test$categorical_arg(facet, c("ggplot", "ggh4x"))
+  if (!is.null(facet)) test$categorical_arg(facet, c("ggplot", "ggh4x"))
+
+  if (inherits(x, c("varest"))) {
+    title_add <- "Residuals"
+    x <- as.data.frame(stats::residuals(x))
+  } else {
+    title_add <- "Series"
+    x <- as.data.frame(x)
+  }
+
+  lag.max <- lag.max %||% ceiling(10 * log(nrow(x) / ncol(x), base = 10))
+  lag.min <- if (type == "partial") 1 else 0
+
+  list(
+    x = x,
+    series = series %||% get_names(x),
+    palette = get_pallete(palette, 4),
+    title_add = title_add,
+    lag.max = lag.max,
+    lag.min = lag.min
+  )
 }
 
 #' Plot Autocorrelation (and Similars) of Dataset
@@ -36,58 +59,55 @@ setup_tests_ggvar_acf <- function(x, series, ci, geom, facet = NULL) {
 ggvar_acf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
-    geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", ncol = 1, alpha = 0.5, ...) {
-  # Initial tests:
-  x <- test$dataset_arg(x)
-  setup_tests_ggvar_acf(x, series, ci, geom)
+    geom = "segment", palette = c("black", "black", "blue", NA),
+    scales = "fixed", ncol = 1, alpha = 0.5, ...) {
+  # Setup:
+  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom, palette)
+  reassign <- c("x", "series", "ci", "geom", "palette", "lag.max")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  if (inherits(x, c("varest"))) {
-    title_add <- "Residuals"
-    data <- as.data.frame(stats::residuals(x))
-  } else {
-    title_add <- "Series"
-    data <- as.data.frame(x)
-  }
-
-  series <- series %||% colnames(data)
-  palette <- get_pallete(palette, 4)
-  title <- c(
-    "correlation" = paste("Auto-correlation of", title_add),
-    "covariance" = paste("Auto-covariance of", title_add),
-    "partial" = paste("Auto-partial-correlation of", title_add)
+  title <- switch(type,
+    "correlation" = paste("Auto-correlation of", setup$title_add),
+    "covariance" = paste("Auto-covariance of", setup$title_add),
+    "partial" = paste("Auto-partial-correlation of", setup$title_add)
   )
 
-  lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
-  lag.min <- if (type == "partial") 1 else 0
-
-  ggplot_add <- list(
-    switch(geom,
-      "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
-      "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
-    ),
-    if (!isFALSE(ci)) {
-      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(data))
-      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
-    }
-  )
-
-  # Data
-  data_acf <- data %>%
+  # Data:
+  data <- x %>%
     dplyr::select(dplyr::all_of(series)) %>%
-    purrr::map2_dfr(series, function(x, name) {
+    purrr::map2_dfr(series, function(col, name) {
       tibble::tibble(
         serie = name,
-        value = stats::acf(x, lag.max = lag.max, type = type, plot = FALSE) %>% purrr::pluck("acf") %>% `[`(, , 1),
-        lag = lag.min:lag.max
+        value = stats::acf(col, lag.max = lag.max, type = type, plot = FALSE) %>%
+          purrr::pluck("acf") %>%
+          `[`(, , 1),
+        lag = setup$lag.min:lag.max
       )
     })
 
-  ggplot(data_acf, aes(.data$lag, .data$value)) +
+  # Graph:
+  ggplot_add <- list(
+    switch(geom,
+      "segment" = ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
+        color = palette[1], ...
+      ),
+      "area" = ggplot2::geom_area(aes(y = .data$value),
+        fill = palette[1], ...
+      )
+    ),
+    if (!isFALSE(ci)) {
+      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(x))
+      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
+        linetype = 2,
+        color = palette[3], fill = palette[4], alpha = alpha
+      )
+    }
+  )
+
+  ggplot(data, aes(.data$lag, .data$value)) +
     ggplot_add +
     ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
-    ggplot2::facet_wrap(vars(serie), scales = scales, ncol = ncol) +
+    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
     ggplot2::labs(title = title[type], x = "Lags", y = "Values")
 }
 
@@ -96,56 +116,54 @@ ggvar_acf <- function(
 ggvar_ccf <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95,
-    facet = "ggplot", geom = "segment",
-    palette = c("black", "black", "blue", NA), scales = "fixed", independent = "none", alpha = 0.5, ...) {
-  # Initial tests:
-  x <- test$dataset_arg(x)
-  setup_tests_ggvar_acf(x, series, ci, geom, facet)
+    geom = "segment", facet = "ggplot", palette = c("black", "black", "blue", NA),
+    scales = "fixed", independent = "none", alpha = 0.5, ...) {
+  # Setup:
+  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom, palette, facet)
+  reassign <- c("x", "series", "ci", "geom", "palette", "lag.max")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  if (inherits(x, "varest")) {
-    title_add <- "Residuals"
-    data <- as.data.frame(stats::residuals(x))
-  } else {
-    title_add <- "Series"
-    data <- as.data.frame(x)
-  }
-
-  series <- series %||% colnames(data)
-  palette <- get_pallete(palette, 4)
-  title <- c(
-    "correlation" = paste("Cross-correlation of", title_add),
-    "covariance" = paste("Cross-covariance of", title_add),
-    "partial" = paste("Cross-partial-correlation of", title_add)
+  title <- switch(type,
+    "correlation" = paste("Cross-correlation of", setup$title_add),
+    "covariance" = paste("Cross-covariance of", setup$title_add),
+    "partial" = paste("Cross-partial-correlation of", setup$title_add)
   )
 
-  lag.max <- lag.max %||% ceiling(10 * log(nrow(data) / ncol(data), base = 10))
-  lag.min <- if (type == "partial") 1 else 0
-
-  ggplot_add <- list(
-    switch(geom,
-      "segment" = list(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0), color = palette[1], ...)),
-      "area" = list(ggplot2::geom_area(aes(y = .data$value), fill = palette[1], ...))
-    ),
-    if (!isFALSE(ci)) {
-      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(data))
-      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval), linetype = 2, color = palette[3], fill = palette[4], alpha = alpha)
-    },
-    define_facet(facet, "var_row", "var_col", scales, independent)
-  )
-
-  # Data
-  data_acf <- data %>%
+  # Data:
+  data <- x %>%
     dplyr::select(dplyr::all_of(series)) %>%
     stats::acf(lag.max = lag.max, type = type, plot = FALSE) %>%
     purrr::pluck("acf") %>%
     purrr::array_tree(3) %>%
-    purrr::map2_dfr(series, ~ data.frame(.y, lag.min:lag.max, .x)) %>%
+    purrr::map2_dfr(series, ~ data.frame(.y, setup$lag.min:lag.max, .x)) %>%
     stats::setNames(c("var_row", "lag", series)) %>%
-    tidyr::pivot_longer(dplyr::all_of(series), names_to = "var_col", values_to = "value")
+    tidyr::pivot_longer(dplyr::all_of(series),
+      names_to = "var_col",
+      values_to = "value"
+    )
 
-  ggplot(data_acf, aes(.data$lag, .data$value)) +
+  # Graph:
+  ggplot_add <- list(
+    switch(geom,
+      "segment" = ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
+        color = palette[1], ...
+      ),
+      "area" = ggplot2::geom_area(aes(y = .data$value),
+        fill = palette[1], ...
+      )
+    ),
+    if (!isFALSE(ci)) {
+      interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(x))
+      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
+        linetype = 2,
+        color = palette[3], fill = palette[4], alpha = alpha
+      )
+    },
+    define_facet(facet, "var_row", "var_col", scales, independent)
+  )
+
+  ggplot(data, aes(.data$lag, .data$value)) +
     ggplot_add +
     ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
-    ggplot2::labs(title = title[type], x = "Lags", y = "Values")
+    ggplot2::labs(title = title, x = "Lags", y = "Values")
 }

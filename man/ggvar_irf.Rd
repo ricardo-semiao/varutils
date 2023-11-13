@@ -9,9 +9,9 @@ ggvar_irf(
   n.ahead = NULL,
   series_impulse = NULL,
   series_response = NULL,
-  facet = "ggplot",
   ci = 0.95,
   ...,
+  facet = "ggplot",
   palette = c("black", "blue", "gray"),
   scales = "fixed",
   independent = "none"
@@ -26,11 +26,11 @@ ggvar_irf(
 
 \item{series_response}{A character vector with variables to consider for the responses. Defaults to all (\code{NULL}).}
 
-\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
-
 \item{ci}{The level of confidence for the \link[vars]{irf}. Set to \code{FALSE} to omit.}
 
 \item{...}{Further arguments passed to \link[vars]{irf}.}
+
+\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
 
 \item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
 

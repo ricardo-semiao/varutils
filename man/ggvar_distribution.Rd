@@ -11,6 +11,8 @@ ggvar_distribution(
   palette = c("grey", "black"),
   bins = 30,
   linewidth = 1,
+  scales = "fixed",
+  ncol = 1,
   ...
 )
 }
@@ -26,6 +28,10 @@ ggvar_distribution(
 \item{bins}{An integer. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.}
 
 \item{linewidth}{An integer. The linewidth of the normal curve line, passed to \link[ggplot2]{geom_line}.}
+
+\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+
+\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
 
 \item{...}{Additional arguments passed to \link[ggplot2]{geom_histogram}.}
 }

@@ -10,10 +10,15 @@ library(testthat)
 library(vdiffr)
 library(varutils)
 
-test_combinations <- function(fun_name, args, combs_name, expect = "expect_doppelganger", evaluate = TRUE) {
+test_combinations <- function(
+    fun_name, args, combs_name,
+    expect = "expect_doppelganger", evaluate = TRUE) {
   k <- prod(sapply(args, length))
 
-  args_names <- paste0(c("", names(args)[-1]), c("", rep(" = ", length(args) - 1)))
+  args_names <- paste0(
+    c("", names(args)[-1]),
+    c("", rep(" = ", length(args) - 1))
+  )
   args_combs <- lapply(args, \(x) rep(x, k / length(x)))
 
   args_combs_trans <- list()

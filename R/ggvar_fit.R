@@ -1,17 +1,24 @@
 #' @noRd
-setup_tests_ggvar_fit <- function(x, compare, series, index) {
+setup_ggvar_fit <- function(x, compare, series, index) {
   test$class_arg(x, c("varest"))
   test$series(series, x)
   test$index(index, n = x$totobs)
   test$boolean_arg(compare)
+
+  list(
+    series = series %||% get_names(x),
+    guide = if (compare) "legend" else "none", name = "Type"
+  )
 }
 
 #' @noRd
-setup_data_ggvar_fit <- function(x, compare, series, index) {
+data_ggvar_fit <- function(x, compare, series, index) {
   data.frame(index = index[(x$p + 1):x$totobs], Fitted.. = stats::fitted(x)) %>%
     `if`(compare, cbind(., Original.. = x$datamat[1:x$K]), .) %>%
     dplyr::select(c(index, dplyr::ends_with(series))) %>%
-    tidyr::pivot_longer(-index, names_to = c("type", "serie"), names_sep = "\\.\\.\\.", values_to = "value")
+    tidyr::pivot_longer(-index,
+      names_to = c("type", "serie"), names_sep = "\\.\\.\\.", values_to = "value"
+    )
 }
 
 #' Plot VAR Fitted Values
@@ -38,23 +45,27 @@ setup_data_ggvar_fit <- function(x, compare, series, index) {
 #' @export
 ggvar_fit <- function(
     x, compare = TRUE, series = NULL, index = 1:x$totobs,
-    palette = c("black"), linetypes = c("solid", "dashed"), scales = "fixed", ncol = 1, ...) {
-  # Initial tests:
-  setup_tests_ggvar_fit(x, compare, series, index)
+    palette = c("black"),
+    linetypes = c("solid", "dashed"), scales = "fixed", ncol = 1, ...) {
+  # Setup:
+  setup <- setup_ggvar_fit(x, compare, series, index)
+  reassign <- c("series")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  series <- series %||% names(x$varresult)
   palette <- get_pallete(palette, 1)
 
   # Data:
-  data <- setup_data_ggvar_fit(x, compare, series, index)
+  data <- data_ggvar_fit(x, compare, series, index)
 
   # Graph:
   ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(linetype = .data$type), color = palette, ...) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = "Fitted VAR Values") +
-    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none", name = "Type")
+    ggplot2::scale_linetype_manual(values = linetypes, guide = setup$guide) +
+    ggplot2::labs(
+      title = "Fitted VAR Values", x = "Index",
+      y = "Fitted", color = "Serie"
+    )
 }
 
 #' @rdname ggvar_fit
@@ -62,20 +73,23 @@ ggvar_fit <- function(
 ggvar_fit_colored <- function(
     x, compare = TRUE, series = NULL, index = 1:x$totobs,
     palette = NULL, linetypes = c("solid", "dashed"), ...) {
-  # Initial tests:
-  setup_tests_ggvar_fit(x, compare, series, index)
+  # Setup:
+  setup <- setup_ggvar_fit(x, compare, series, index)
+  reassign <- c("series")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  series <- series %||% names(x$varresult)
   palette <- get_pallete(palette, length(series))
 
   # Data:
-  data <- setup_data_ggvar_fit(x, compare, series, index)
+  data <- data_ggvar_fit(x, compare, series, index)
 
   # Graph:
   ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(color = .data$serie, linetype = .data$type), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::scale_linetype_manual(values = linetypes, guide = if (compare) "legend" else "none", name = "Type") +
-    ggplot2::labs(title = "Fitted VAR Values", x = "Index", y = "Fitted", color = "Serie")
+    ggplot2::scale_linetype_manual(values = linetypes, guide = setup$guide) +
+    ggplot2::labs(
+      title = "Fitted VAR Values", x = "Index",
+      y = "Fitted", color = "Serie"
+    )
 }

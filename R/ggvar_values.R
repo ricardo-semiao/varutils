@@ -1,11 +1,28 @@
 #' @noRd
-setup_tests_ggvar_values <- function(x, series) {
+setup_ggvar_values <- function(x, series, index, palette) {
+  x <- test$dataset_arg(x)
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   test$series(series, x)
+
+  # Create values:
+  if (inherits(x, "varest")) {
+    title <- "VAR Residuals Distribution"
+    x <- as.data.frame(stats::residuals(x))
+  } else {
+    title <- "Time Series Distribution"
+    x <- as.data.frame(x)
+  }
+
+  list(
+    x = x,
+    index = index %||% seq_len(nrow(x)),
+    series = series %||% get_names(x),
+    title = title
+  )
 }
 
 #' @noRd
-setup_data_ggvar_values <- function(data, series, index) {
+data_ggvar_values <- function(data, series, index) {
   data %>%
     dplyr::select(dplyr::all_of(series)) %>%
     dplyr::mutate(index = index) %>%
@@ -28,40 +45,29 @@ setup_data_ggvar_values <- function(data, series, index) {
 #'
 #' @examples
 #' ggvar_values(freeny[-2], scales = "free_y")
-#' ggvar_values_colored(freeny[-2], scales = "free_y")
+#' ggvar_values_colored(freeny[-2])
 #' ggvar_values(vars::VAR(freeny[-2]), scales = "free_y")
 #'
 #' @export
 ggvar_values <- function(
     x, series = NULL, index = NULL,
     palette = c("black"), scales = "fixed", ncol = 1, ...) {
-  # Initial tests:
-  x <- test$dataset_arg(x)
-  setup_tests_ggvar_values(x, series)
+  # Setup:
+  setup <- setup_ggvar_values(x, series, index, palette)
+  reassign <- c("x", "series", "index", "palette")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  if (inherits(x, "varest")) {
-    title <- "VAR Residuals Distribution"
-    data <- as.data.frame(stats::residuals(x))
-  } else {
-    title <- "Time Series Distribution"
-    data <- as.data.frame(x)
-  }
-
-  index <- index %||% 1:nrow(data)
-  series <- series %||% colnames(data)
-  palette <- get_pallete(palette, 1)
-
-  test$index(index, n = nrow(data), "'obs' of `x` in varest form")
+  test$index(index, n = nrow(x), "'obs' of `x` in varest form")
+  palette = get_pallete(palette, 1)
 
   # Data:
-  data_values <- setup_data_ggvar_values(data, series, index)
+  data <- data_ggvar_values(x, series, index)
 
   # Graph:
-  ggplot(data_values, aes(.data$index, .data$value)) +
+  ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(color = palette[1], ...) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = title, x = "Index", y = "Values")
+    ggplot2::labs(title = setup$title, x = "Index", y = "Values")
 }
 
 #' @rdname ggvar_values
@@ -69,31 +75,22 @@ ggvar_values <- function(
 ggvar_values_colored <- function(
     x, series = NULL, index = NULL,
     palette = NULL, ...) {
-  # Initial tests:
-  x <- test$dataset_arg(x)
-  setup_tests_ggvar_values(x, series)
+  # Setup:
+  setup <- setup_ggvar_values(x, series, index, palette)
+  reassign <- c("x", "series", "index", "palette")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  # Create values:
-  if (inherits(x, "varest")) {
-    title <- "VAR Residuals Distribution"
-    data <- as.data.frame(stats::residuals(x))
-  } else {
-    title <- "Time Series Distribution"
-    data <- as.data.frame(x)
-  }
-
-  index <- index %||% 1:nrow(data)
-  series <- series %||% colnames(data)
-  palette <- get_pallete(palette, length(series))
-
-  test$index(index, n = nrow(data))
+  test$index(index, n = nrow(x))
+  palette = get_pallete(palette, length(series))
 
   # Data:
-  data_values <- setup_data_ggvar_values(data, series, index)
+  data <- data_ggvar_values(x, series, index)
 
   # Graph:
-  ggplot(data_values, aes(.data$index, .data$value)) +
+  ggplot(data, aes(.data$index, .data$value)) +
     ggplot2::geom_line(aes(color = .data$serie), ...) +
     ggplot2::scale_color_manual(values = palette) +
-    ggplot2::labs(title = title, x = "Index", y = "Values", color = "Serie")
+    ggplot2::labs(
+      title = setup$title, x = "Index", y = "Values", color = "Serie"
+    )
 }

@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The varutils R package is being developed to provide general utility
@@ -44,18 +46,16 @@ devtools::install_github("ricardo-semiao/varutils")
 
 ## Upcoming changes
 
+- Rethink how to pass the large number of arguments to ggplot.
 - More thorough tests:
   - What errors to expect in `expect_error` calls.
   - Directly test for elements of the ggplots returned by functions.
   - More tests specifically for `test_fun()`.
-  - Add tests for “helper” functions.
-- Resolve CRAN notes related to tidy evaluation, and
-  [lintr](https://lintr.r-lib.org/) notes.
-- Reorganization of “\# Initial tests” and “\# Create values” sections:
-  - Rethink the `test` functions list scheme.
-  - Standardization to rlang errors.
+  - Add tests for “helper” and “setup” functions.
+- Rethink the `test` functions list scheme and start using rlang errors.
 - Add more info/sections to functions documentation.
-- Rethink how to pass the large number of arguments to ggplot.
+- See about solving some less important
+  [lintr](https://lintr.r-lib.org/) notes.
 
 ## Aditional informations
 

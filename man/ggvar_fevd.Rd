@@ -24,7 +24,7 @@ ggvar_fevd(
 
 \item{geom}{The ggplot geom used to create the plot, "bar" for \link[ggplot2]{geom_bar} (the default), "area" for \link[ggplot2]{geom_area}, or "line" for \link[ggplot2]{geom_line}.}
 
-\item{palette}{A vector of colors (line, conf. interval). See \code{vignette("palettes")}.}
+\item{palette}{A vector of colors for each variable. See \code{vignette("palettes")}.}
 
 \item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
 

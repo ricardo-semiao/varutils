@@ -40,7 +40,7 @@ Plots the historic values of variables in a dataset, or residuals of a VAR model
 }
 \examples{
 ggvar_values(freeny[-2], scales = "free_y")
-ggvar_values_colored(freeny[-2], scales = "free_y")
+ggvar_values_colored(freeny[-2])
 ggvar_values(vars::VAR(freeny[-2]), scales = "free_y")
 
 }

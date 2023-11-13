@@ -1,3 +1,38 @@
+#' @noRd
+setup_ggvar_predict <- function(
+    x, n.ahead, data_test, series,
+    index, ci, palette) {
+  test$class_arg(x, c("varest", "varprd"))
+  test$class_arg(data_test, c("data.frame", "matrix", "NULL"))
+  data_test <- test$dataset_arg(data_test)
+  test$series(series, x)
+  test$interval_arg(ci, 0, 1, FALSE)
+
+  if (inherits(x, "varprd")) {
+    if (!is.null(n.ahead)) warning("`x` of class 'varprd', ignoring `n.ahead`")
+    n.ahead <- nrow(x$fcst[[1]])
+  } else {
+    msg <- "`n.ahead` must be supplied with `x` of class 'varest' and `data_test = NULL`"
+    n.ahead <- n.ahead %||% nrow(data_test) %||% stop(msg)
+  }
+
+  if (!is.null(data_test) && nrow(data_test) != n.ahead) {
+    stop("`data_test` with incorrect number of rows")
+  }
+
+  index <- index %||% 1:n.ahead
+  test$index(index, n = n.ahead)
+
+  list(
+    n.ahead = n.ahead,
+    data_test = data_test,
+    series = series %||% get_names(x),
+    index = index,
+    palette = get_pallete(palette, 4),
+    guide = if (is.null(data_test)) "none" else "legend"
+  )
+}
+
 #' Plot the Predicted Values of a VAR
 #'
 #' Plots the result of a \link[vars]{predict.varest} call. Has an option to overlay it with the true variables, if provided a test dataset.
@@ -24,64 +59,68 @@
 #'
 #' @export
 ggvar_predict <- function(
-    x, data_test = NULL, n.ahead = NULL, series = NULL, index = 1:n.ahead,
+    x, data_test = NULL, n.ahead = NULL, series = NULL, index = NULL,
     ci = 0.95, dumvar = NULL,
-    palette = c("blue", "black", "darkblue", "gray"), linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...) {
-  # Initial tests:
-  test$class_arg(x, c("varest", "varprd"))
-  test$class_arg(data_test, c("data.frame", "matrix", "NULL"))
-  data_test <- test$dataset_arg(data_test)
-  test$series(series, x)
-  test$interval_arg(ci, 0, 1, FALSE)
+    palette = c("blue", "black", "darkblue", "gray"),
+    linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...) {
+  # Setup:
+  setup <- setup_ggvar_predict(x, n.ahead, data_test, series, index, ci, palette)
+  reassign <- c("n.ahead", "data_test", "series", "index", "palette")
+  list2env(setup[reassign], envir = rlang::current_env())
 
-  if (inherits(x, "varprd")) {
-    if (!is.null(n.ahead)) warning("`x` of class 'varprd', ignoring `n.ahead`")
-    n.ahead <- nrow(x$fcst[[1]])
+  # Data:
+  pred <- if (inherits(x, "varest")) {
+    stats::predict(x, n.ahead = n.ahead, ci = ci, dumvar = dumvar)
   } else {
-    n.ahead <- n.ahead %||% nrow(data_test) %||% stop("`n.ahead` must be supplied with `x` of class 'varest' and `data_test = NULL`")
+    x
   }
-
-  if (!is.null(data_test) && nrow(data_test) != n.ahead) stop("`data_test` with incorrect number of rows")
-
-  test$index(index, n = n.ahead)
-
-  # Create values:
-  palette <- get_pallete(palette, 4)
-  series <- series %||% if (inherits(x, "varest")) names(x$varresult) else names(x$fcst)
-
-  ggplot_add <- list(
-    if (!isFALSE(ci)) ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
-      fill = palette[4], color = palette[3], linetype = linetypes[1], alpha = alpha
-    )
-  )
-
-  # Data - predictions:
-  pred <- if (inherits(x, "varest")) stats::predict(x, n.ahead = n.ahead, ci = ci, dumvar = dumvar) else x
 
   data_pred <- pred$fcst[series] %>%
     do.call(rbind, .) %>%
     as.data.frame() %>%
-    dplyr::mutate(serie = rep(series, each = n.ahead), index = rep(index, length(series))) %>%
-    dplyr::rename(prediction = fcst)
+    dplyr::mutate(
+      serie = rep(series, each = n.ahead),
+      index = rep(index, length(series))
+    ) %>%
+    dplyr::rename(prediction = "fcst")
 
   data_pred <- if (is.null(data_test)) {
     data_pred %>%
-      tidyr::pivot_longer(c("prediction"), values_to = "value", names_to = "type")
+      tidyr::pivot_longer(c("prediction"),
+        values_to = "value", names_to = "type"
+      )
   } else {
     data_test %>%
       as.data.frame() %>%
-      dplyr::select(all_of(series)) %>%
+      dplyr::select(dplyr::all_of(series)) %>%
       dplyr::mutate(index = index) %>%
-      tidyr::pivot_longer(-c("index"), values_to = "actual", names_to = "serie") %>%
+      tidyr::pivot_longer(-c("index"),
+        values_to = "actual", names_to = "serie"
+      ) %>%
       dplyr::full_join(data_pred, by = c("index", "serie")) %>%
-      tidyr::pivot_longer(c("prediction", "actual"), values_to = "value", names_to = "type")
+      tidyr::pivot_longer(c("prediction", "actual"),
+        values_to = "value",
+        names_to = "type"
+      )
   }
 
   # Graph:
+  ggplot_add <- list(
+    if (!isFALSE(ci)) {
+      ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
+        fill = palette[4], color = palette[3],
+        linetype = linetypes[1], alpha = alpha
+      )
+    }
+  )
+
   ggplot(data_pred, aes(.data$index, .data$value)) +
     ggplot_add +
     ggplot2::geom_line(aes(color = .data$type), ...) +
     ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::scale_color_manual(values = palette[1:2], guide = if (is.null(data_test)) "none" else "legend") +
-    ggplot2::labs(title = "VAR Predicted Values", x = "Index", y = "Values", color = "Series")
+    ggplot2::scale_color_manual(values = palette[1:2], guide = setup$guide) +
+    ggplot2::labs(
+      title = "VAR Predicted Values", x = "Index",
+      y = "Values", color = "Series"
+    )
 }

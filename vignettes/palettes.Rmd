@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 Many `varutils` give the change for the user to change the colors of the graph trough the argument `palette`. This argument can have multiple specifications:
 
 - `NULL`, for the default ggplot colors
-- A palette from a package, in the format `pgk::palette_name`
+- A palette from a package, in the format `"pgk::palette_name"`
 - A vector of colors, as defined in the [ggplot specs vignette](https://cran.r-project.org/web/packages/ggplot2/vignettes/ggplot2-specs.html):
   - A __name__, e.g., `"red"`. R has `r length(colours())` built-in named colours, which can be listed with `colours()`.
   - An __rgb specification__, with a string of the form `"#RRGGBB"` where each of the pairs `RR`, `GG`, `BB` consists of two hexadecimal digits giving a value in the range `00` to `FF`. You can optionally make the colour transparent by using the form `"#RRGGBBAA"`.
