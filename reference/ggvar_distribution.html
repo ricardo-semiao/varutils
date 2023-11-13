@@ -64,6 +64,8 @@
 <span>  palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grey"</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
 <span>  bins <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  linewidth <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  scales <span class="op">=</span> <span class="st">"fixed"</span>,</span>
+<span>  ncol <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,6 +94,14 @@
 
 <dt>linewidth</dt>
 <dd><p>An integer. The linewidth of the normal curve line, passed to <a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a>.</p></dd>
+
+
+<dt>scales</dt>
+<dd><p>"fixed" (the default), "free", "free_x" or "free_y". passed to <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a>.</p></dd>
+
+
+<dt>ncol</dt>
+<dd><p>An integer. The number of facet columns, passed to <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a>.</p></dd>
 
 
 <dt>...</dt>

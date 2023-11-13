@@ -62,9 +62,9 @@
 <span>  n.ahead <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  series_impulse <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  series_response <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  facet <span class="op">=</span> <span class="st">"ggplot"</span>,</span>
 <span>  ci <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  facet <span class="op">=</span> <span class="st">"ggplot"</span>,</span>
 <span>  palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"gray"</span><span class="op">)</span>,</span>
 <span>  scales <span class="op">=</span> <span class="st">"fixed"</span>,</span>
 <span>  independent <span class="op">=</span> <span class="st">"none"</span></span>
@@ -89,16 +89,16 @@
 <dd><p>A character vector with variables to consider for the responses. Defaults to all (<code>NULL</code>).</p></dd>
 
 
-<dt>facet</dt>
-<dd><p>The facet "engine" to be used. "ggplot2" for <a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a>, "ggh4x" for <a href="https://teunbrand.github.io/ggh4x/reference/facet_grid2.html" class="external-link">facet_grid2</a>.</p></dd>
-
-
 <dt>ci</dt>
 <dd><p>The level of confidence for the <a href="https://rdrr.io/pkg/vars/man/irf.html" class="external-link">irf</a>. Set to <code>FALSE</code> to omit.</p></dd>
 
 
 <dt>...</dt>
 <dd><p>Further arguments passed to <a href="https://rdrr.io/pkg/vars/man/irf.html" class="external-link">irf</a>.</p></dd>
+
+
+<dt>facet</dt>
+<dd><p>The facet "engine" to be used. "ggplot2" for <a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a>, "ggh4x" for <a href="https://teunbrand.github.io/ggh4x/reference/facet_grid2.html" class="external-link">facet_grid2</a>.</p></dd>
 
 
 <dt>palette</dt>
