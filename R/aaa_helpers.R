@@ -76,19 +76,16 @@ create_sec_axis <- function() {
 }
 
 
-define_facet <- function(facet, var_row, var_col, scales, independent) {
+define_facet <- function(facet, var_row, var_col, ...) {
   if (facet == "ggh4x") {
     if (!rlang::is_installed("ggh4x")) {
       warning("Package ggh4x is not installed. Coercing `facet = 'ggplot'`.")
       facet <- "ggplot"
     } else {
-      ggh4x::facet_grid2(stats::reformulate(var_row, var_col),
-        scales = scales,
-        independent = independent
-      )
+      ggh4x::facet_grid2(stats::reformulate(var_row, var_col), ...)
     }
   } else if (facet == "ggplot") {
-    ggplot2::facet_grid(stats::reformulate(var_row, var_col), scales = scales)
+    ggplot2::facet_grid(stats::reformulate(var_row, var_col), ...)
   } else {
     stop("Invalid `facet` argument.")
   }

@@ -18,13 +18,12 @@ test_combinations("ggvar_stability", args$stab, "x=varstabil")
 
 test_that("'external' args combinations work", {
   expect_doppelganger("external", ggvar_stability(vars::VAR(freeny[1:30, -2]),
-    scales = "free_y", ncol = 2,
-    ci = 0.5, palette = c("pink", "purple", "violet", "magenta")
+    ci = 0.5,
+    args_facet = list(scales = "free_y", ncol = 1),
+    args_line = list(color = "red")
   ))
 })
 
 set.seed(NULL)
 
 # test_active_file()
-
-# Old tests:

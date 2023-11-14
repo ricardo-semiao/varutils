@@ -1,7 +1,5 @@
 #' @noRd
-setup_ggvar_acf <- function(
-    x, series, ci, type, lag.max,
-    geom, palette, facet = NULL) {
+setup_ggvar_acf <- function(x, series, ci, type, lag.max, geom, facet = NULL) {
   x <- test$dataset_arg(x)
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   test$series(series, x)
@@ -23,46 +21,50 @@ setup_ggvar_acf <- function(
   list(
     x = x,
     series = series %||% get_names(x),
-    palette = get_pallete(palette, 4),
     title_add = title_add,
     lag.max = lag.max,
     lag.min = lag.min
   )
 }
 
-#' Plot Autocorrelation (and Similars) of Dataset
+#' Plot autocorrelation (and similars) of dataset
 #'
-#' \code{ggvar_acf} plots the result of a \link[stats]{acf} call for every series, using ggplot and \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the cross correlations (and similars) between the series, using ggplot in a matrix fashion with \link[ggplot2]{facet_grid}.
+#' \code{ggvar_acf} plots the result of a \link[stats]{acf} call for every
+#'  series, using \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the
+#'  cross correlations (and similars) between the series, using
+#'  \link[ggplot2]{facet_grid}.
 #'
-#' @param x A dataset (object coercible to data.frame) or a "varest" object to get residuals from.
-#' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
-#' @param type The type of ACF to be computed, passed to \link[stats]{acf}. Can be either "correlation", "covariance", or "partial".
-#' @param lag.max The number of lags used to calculate the ACF, passed to \link[stats]{acf}. defaults to \code{ceiling(10 * log(nrow(data) / ncol(data), base = 10))}.
-#' @param ci The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit.
-#' @param geom The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.
-#' @param facet The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.
-#' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
-#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param independent For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.
-#' @param alpha A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_ribbon}.
-#' @param ... Additional arguments passed to the ggplot geom defined by \code{geom}.
+#' @param x A dataset (object coercible to data.frame) or a "varest" object to
+#'  get residuals from.
+#' @eval param_series()
+#' @param type The type of ACF to be computed, passed to \link[stats]{acf}. Can
+#'  be either "correlation", "covariance", or "partial".
+#' @param lag.max The number of lags used to calculate the ACF, passed to
+#'  \link[stats]{acf}. defaults to \code{10 * log(nrow(x) / ncol(x), base = 10)}.
+#' @param ci The level of confidence for the ACF confidence interval. Set to
+#'  \code{FALSE} to omit the \link[ggplot2]{geom_ribbon}.
+#' @eval param_dots("stats::acf")
+#' @eval param_geom(c("geom_segment", "geom_area"))
+#' @eval param_args(c("geom_ribbon", "geom_hline", "geom_facet"))
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_acf(freeny[-2], scales = "free_y")
-#' ggvar_ccf(freeny[-2], scales = "free_y")
-#' ggvar_acf(vars::VAR(freeny[-2]), scales = "free_y")
+#' ggvar_acf(freeny[-2], args_facet = list(scales = "free_y"))
+#' ggvar_ccf(freeny[-2], args_facet = list(scales = "free_y"))
+#' ggvar_acf(vars::VAR(freeny[-2]), args_facet = list(scales = "free_y"))
 #'
 #' @export
 ggvar_acf <- function(
     x, series = NULL,
-    type = "correlation", lag.max = NULL, ci = 0.95,
-    geom = "segment", palette = c("black", "black", "blue", NA),
-    scales = "fixed", ncol = 1, alpha = 0.5, ...) {
+    type = "correlation", lag.max = NULL, ci = 0.95, ...,
+    geom = "segment",
+    args_geom = list(),
+    args_ribbon = list(linetype = 2, color = "blue"),
+    args_hline = list(),
+    args_facet = list()) {
   # Setup:
-  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom, palette)
+  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom)
   reassign <- c("x", "series", "ci", "geom", "palette", "lag.max")
   list2env(setup[reassign], envir = rlang::current_env())
 
@@ -78,7 +80,9 @@ ggvar_acf <- function(
     purrr::map2_dfr(series, function(col, name) {
       tibble::tibble(
         serie = name,
-        value = stats::acf(col, lag.max = lag.max, type = type, plot = FALSE) %>%
+        value = stats::acf(col, ...,
+         lag.max = lag.max, type = type, plot = FALSE
+        ) %>%
           purrr::pluck("acf") %>%
           `[`(, , 1),
         lag = setup$lag.min:lag.max
@@ -88,38 +92,40 @@ ggvar_acf <- function(
   # Graph:
   ggplot_add <- list(
     switch(geom,
-      "segment" = ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
-        color = palette[1], ...
-      ),
-      "area" = ggplot2::geom_area(aes(y = .data$value),
-        fill = palette[1], ...
-      )
+      "segment" = inject(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
+                   !!!args_geom
+                  )),
+      "area" = inject(ggplot2::geom_area(aes(y = .data$value),
+                 !!!args_geom
+                ))
     ),
     if (!isFALSE(ci)) {
       interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(x))
-      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
-        linetype = 2,
-        color = palette[3], fill = palette[4], alpha = alpha
-      )
+      inject(ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
+       !!!args_ribbon
+      ))
     }
   )
 
   ggplot(data, aes(.data$lag, .data$value)) +
     ggplot_add +
-    ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
-    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::labs(title = title[type], x = "Lags", y = "Values")
+    inject(ggplot2::geom_hline(yintercept = 0, !!!args_hline)) +
+    inject(ggplot2::facet_wrap(vars(.data$serie), !!!args_facet)) +
+    ggplot2::labs(title = title, x = "Lags", y = "Values")
 }
 
 #' @rdname ggvar_acf
 #' @export
 ggvar_ccf <- function(
     x, series = NULL,
-    type = "correlation", lag.max = NULL, ci = 0.95,
-    geom = "segment", facet = "ggplot", palette = c("black", "black", "blue", NA),
-    scales = "fixed", independent = "none", alpha = 0.5, ...) {
+    type = "correlation", lag.max = NULL, ci = 0.95, ...,
+    geom = "segment", facet = "ggplot",
+    args_geom = list(),
+    args_ribbon = list(linetype = 2, color = "blue", fill = "gray"),
+    args_hline = list(),
+    args_facet = list()) {
   # Setup:
-  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom, palette, facet)
+  setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom, facet)
   reassign <- c("x", "series", "ci", "geom", "palette", "lag.max")
   list2env(setup[reassign], envir = rlang::current_env())
 
@@ -132,7 +138,7 @@ ggvar_ccf <- function(
   # Data:
   data <- x %>%
     dplyr::select(dplyr::all_of(series)) %>%
-    stats::acf(lag.max = lag.max, type = type, plot = FALSE) %>%
+    stats::acf(lag.max = lag.max, type = type, plot = FALSE, ...) %>%
     purrr::pluck("acf") %>%
     purrr::array_tree(3) %>%
     purrr::map2_dfr(series, ~ data.frame(.y, setup$lag.min:lag.max, .x)) %>%
@@ -145,25 +151,24 @@ ggvar_ccf <- function(
   # Graph:
   ggplot_add <- list(
     switch(geom,
-      "segment" = ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
-        color = palette[1], ...
-      ),
-      "area" = ggplot2::geom_area(aes(y = .data$value),
-        fill = palette[1], ...
-      )
+      "segment" = inject(ggplot2::geom_segment(aes(xend = .data$lag, yend = 0),
+                   !!!args_geom
+                  )),
+      "area" = inject(ggplot2::geom_area(aes(y = .data$value),
+                 !!!args_geom
+                ))
     ),
     if (!isFALSE(ci)) {
       interval <- stats::qnorm((1 - ci) / 2) / sqrt(nrow(x))
-      ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
-        linetype = 2,
-        color = palette[3], fill = palette[4], alpha = alpha
-      )
+      inject(ggplot2::geom_ribbon(aes(ymin = -interval, ymax = interval),
+       !!!args_ribbon
+      ))
     },
-    define_facet(facet, "var_row", "var_col", scales, independent)
+    inject(define_facet(facet, "var_row", "var_col", !!!args_facet))
   )
 
   ggplot(data, aes(.data$lag, .data$value)) +
     ggplot_add +
-    ggplot2::geom_hline(yintercept = 0, color = palette[2]) +
+    inject(ggplot2::geom_hline(yintercept = 0, !!!args_hline)) +
     ggplot2::labs(title = title, x = "Lags", y = "Values")
 }

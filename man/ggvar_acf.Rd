@@ -3,7 +3,7 @@
 \name{ggvar_acf}
 \alias{ggvar_acf}
 \alias{ggvar_ccf}
-\title{Plot Autocorrelation (and Similars) of Dataset}
+\title{Plot autocorrelation (and similars) of dataset}
 \usage{
 ggvar_acf(
   x,
@@ -11,12 +11,12 @@ ggvar_acf(
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
+  ...,
   geom = "segment",
-  palette = c("black", "black", "blue", NA),
-  scales = "fixed",
-  ncol = 1,
-  alpha = 0.5,
-  ...
+  args_geom = list(),
+  args_ribbon = list(linetype = 2, color = "blue"),
+  args_hline = list(),
+  args_facet = list()
 )
 
 ggvar_ccf(
@@ -25,51 +25,52 @@ ggvar_ccf(
   type = "correlation",
   lag.max = NULL,
   ci = 0.95,
+  ...,
   geom = "segment",
   facet = "ggplot",
-  palette = c("black", "black", "blue", NA),
-  scales = "fixed",
-  independent = "none",
-  alpha = 0.5,
-  ...
+  args_geom = list(),
+  args_ribbon = list(linetype = 2, color = "blue", fill = "gray"),
+  args_hline = list(),
+  args_facet = list()
 )
 }
 \arguments{
-\item{x}{A dataset (object coercible to data.frame) or a "varest" object to get residuals from.}
+\item{x}{A dataset (object coercible to data.frame) or a "varest" object to
+get residuals from.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
-\item{type}{The type of ACF to be computed, passed to \link[stats]{acf}. Can be either "correlation", "covariance", or "partial".}
+\item{type}{The type of ACF to be computed, passed to \link[stats]{acf}. Can
+be either "correlation", "covariance", or "partial".}
 
-\item{lag.max}{The number of lags used to calculate the ACF, passed to \link[stats]{acf}. defaults to \code{ceiling(10 * log(nrow(data) / ncol(data), base = 10))}.}
+\item{lag.max}{The number of lags used to calculate the ACF, passed to
+\link[stats]{acf}. defaults to \code{10 * log(nrow(x) / ncol(x), base = 10)}.}
 
-\item{ci}{The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit.}
+\item{ci}{The level of confidence for the ACF confidence interval. Set to
+\code{FALSE} to omit the \link[ggplot2]{geom_ribbon}.}
 
-\item{geom}{The ggplot geom used to create the plot, "segment" for \link[ggplot2]{geom_segment} (the default) or "area" for \link[ggplot2]{geom_area}.}
+\item{...}{Additional arguments passed to \link[stats]{acf}.}
 
-\item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
+\item{geom}{The ggplot geom used to create the plot, 'segment' (the default) for \link[ggplot2]{geom_segment}, 'area' for \link[ggplot2]{geom_area}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_ribbon}{Aditional arguments passed to \link[ggplot2]{geom_ribbon}.}
 
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_ribbon}.}
-
-\item{...}{Additional arguments passed to the ggplot geom defined by \code{geom}.}
-
-\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
-
-\item{independent}{For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{geom_facet}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-\code{ggvar_acf} plots the result of a \link[stats]{acf} call for every series, using ggplot and \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the cross correlations (and similars) between the series, using ggplot in a matrix fashion with \link[ggplot2]{facet_grid}.
+\code{ggvar_acf} plots the result of a \link[stats]{acf} call for every
+ series, using \link[ggplot2]{facet_wrap}. \code{ggvar_ccf} plots all the
+ cross correlations (and similars) between the series, using
+ \link[ggplot2]{facet_grid}.
 }
 \examples{
-ggvar_acf(freeny[-2], scales = "free_y")
-ggvar_ccf(freeny[-2], scales = "free_y")
-ggvar_acf(vars::VAR(freeny[-2]), scales = "free_y")
+ggvar_acf(freeny[-2], args_facet = list(scales = "free_y"))
+ggvar_ccf(freeny[-2], args_facet = list(scales = "free_y"))
+ggvar_acf(vars::VAR(freeny[-2]), args_facet = list(scales = "free_y"))
 
 }
