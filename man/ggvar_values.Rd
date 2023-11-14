@@ -9,38 +9,44 @@ ggvar_values(
   x,
   series = NULL,
   index = NULL,
-  palette = c("black"),
-  scales = "fixed",
-  ncol = 1,
-  ...
+  args_line = list(),
+  args_facet = list()
 )
 
-ggvar_values_colored(x, series = NULL, index = NULL, palette = NULL, ...)
+ggvar_values_colored(
+  x,
+  series = NULL,
+  index = NULL,
+  colors = NULL,
+  args_line = list()
+)
 }
 \arguments{
-\item{x}{Either a "varest" object for plotting the residuals, or an dataset (object coercible to data.frame) with numeric variables.}
+\item{x}{Either a "varest" object for plotting the residuals, or an dataset
+(object coercible to data.frame) with numeric variables.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
-\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to \code{x$obs} or \code{nrow(x)}. Defaults to a numeric sequence.}
+\item{index}{A vector of labels to the x-axis, normally dates. Must have  length equal to \code{x$obs} or \code{nrow(x)}. Defaults to a numeric sequence.}
 
-\item{palette}{A vector of colors. Just one for \code{ggvar_values}, one for each variable for \code{ggvar_values_colored}. See \code{vignette("palettes")}.}
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
-
-\item{...}{Additional arguments passed to \link[ggplot2]{geom_line}.}
+\item{colors}{A vector of colors for each variable. Passed to\link[ggplot2]{scale_color_manual}. See \code{vignette("colors")}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots the historic values of variables in a dataset, or residuals of a VAR model. \code{ggvar_values} Plots each series in a facet. \code{ggvar_values_colored} plots all in the same graph, each with a different color.
+Plots the historic values of variables in a dataset, or residuals of a VAR
+ model. \code{ggvar_values} Plots each series in a facet.
+ \code{ggvar_values_colored} plots all in the same graph, each with a
+ different color.
 }
 \examples{
-ggvar_values(freeny[-2], scales = "free_y")
+ggvar_values(freeny[-2], args_facet = list(scales = "free_y"))
 ggvar_values_colored(freeny[-2])
-ggvar_values(vars::VAR(freeny[-2]), scales = "free_y")
+ggvar_values(vars::VAR(freeny[-2]), args_facet = list(scales = "free_y"))
 
 }

@@ -1,5 +1,4 @@
 # Tests:
-
 x_varest <- vars::VAR(EuStockMarkets)
 x_categorical <- 1
 x_categorical2 <- 2
@@ -43,5 +42,3 @@ test_that("interval_arg test works", {
 test_that("dataset_arg test works", {
   expect_warning(test_fun()$dataset_arg(x_dataset)) # non numeric
 })
-
-# test_active_file()

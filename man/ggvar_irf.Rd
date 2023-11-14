@@ -12,31 +12,39 @@ ggvar_irf(
   ci = 0.95,
   ...,
   facet = "ggplot",
-  palette = c("black", "blue", "gray"),
-  scales = "fixed",
-  independent = "none"
+  args_line = list(),
+  args_hline = list(),
+  args_ribbon = list(fill = NA, linetype = 2, color = "blue"),
+  args_facet = list()
 )
 }
 \arguments{
-\item{x}{A "varest" object to pass to \link[vars]{irf}, or, directly, a "varirf" object.}
+\item{x}{A "varest" object to pass to \link[vars]{irf}, or, directly, a
+"varirf" object.}
 
-\item{n.ahead}{An integer. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".}
+\item{n.ahead}{An integer. The size of the forecast horizon, passed to
+\link[vars]{irf}. Unused if \code{x} is "varirf".}
 
-\item{series_impulse}{A character vector with variables to consider for the impulses. Defaults to all (\code{NULL}).}
+\item{series_impulse}{A character vector with variables to consider for the
+impulses. Defaults to all (\code{NULL}).}
 
-\item{series_response}{A character vector with variables to consider for the responses. Defaults to all (\code{NULL}).}
+\item{series_response}{A character vector with variables to consider for the
+responses. Defaults to all (\code{NULL}).}
 
-\item{ci}{The level of confidence for the \link[vars]{irf}. Set to \code{FALSE} to omit.}
+\item{ci}{The level of confidence for the \link[vars]{irf}. Set to
+\code{FALSE} to omit.}
 
-\item{...}{Further arguments passed to \link[vars]{irf}.}
+\item{...}{Additional arguments passed to \link[vars]{irf}.}
 
-\item{facet}{The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.}
+\item{facet}{The facet "engine" to be used. 'ggplot2' for \link[ggplot2]{facet_grid}, 'ggh4x' for \link[ggh4x]{facet_grid2}}
 
-\item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{independent}{For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.}
+\item{args_ribbon}{Aditional arguments passed to \link[ggplot2]{geom_ribbon}.}
+
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_grid}.}
 }
 \value{
 An object of class \code{ggplot}.
@@ -45,6 +53,8 @@ An object of class \code{ggplot}.
 Plots the result of a \link[vars]{irf} call.
 }
 \examples{
-ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10, scales = "free_y")
+ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10,
+ args_facet = list(scales = "free_y")
+)
 
 }

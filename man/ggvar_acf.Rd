@@ -53,11 +53,15 @@ be either "correlation", "covariance", or "partial".}
 
 \item{geom}{The ggplot geom used to create the plot, 'segment' (the default) for \link[ggplot2]{geom_segment}, 'area' for \link[ggplot2]{geom_area}.}
 
+\item{args_geom}{Arguments passed to the chosen \code{geom}.}
+
 \item{args_ribbon}{Aditional arguments passed to \link[ggplot2]{geom_ribbon}.}
 
 \item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{args_facet}{Aditional arguments passed to \link[ggplot2]{geom_facet}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
+
+\item{facet}{The facet "engine" to be used. 'ggplot2' for \link[ggplot2]{facet_grid}, 'ggh4x' for \link[ggh4x]{facet_grid2}}
 }
 \value{
 An object of class \code{ggplot}.

@@ -38,7 +38,7 @@
 <line x1='560.14' y1='267.80' x2='560.14' y2='412.31' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <line x1='621.89' y1='293.37' x2='621.89' y2='412.31' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <line x1='683.64' y1='317.56' x2='683.64' y2='412.31' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polygon points='66.11,522.13 127.87,522.13 189.62,522.13 251.37,522.13 313.13,522.13 374.88,522.13 436.63,522.13 498.39,522.13 560.14,522.13 621.89,522.13 683.64,522.13 683.64,302.50 621.89,302.50 560.14,302.50 498.39,302.50 436.63,302.50 374.88,302.50 313.13,302.50 251.37,302.50 189.62,302.50 127.87,302.50 66.11,302.50 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: none;' />
+<polygon points='66.11,522.13 127.87,522.13 189.62,522.13 251.37,522.13 313.13,522.13 374.88,522.13 436.63,522.13 498.39,522.13 560.14,522.13 621.89,522.13 683.64,522.13 683.64,302.50 621.89,302.50 560.14,302.50 498.39,302.50 436.63,302.50 374.88,302.50 313.13,302.50 251.37,302.50 189.62,302.50 127.87,302.50 66.11,302.50 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #333333;' />
 <polyline points='66.11,522.13 127.87,522.13 189.62,522.13 251.37,522.13 313.13,522.13 374.88,522.13 436.63,522.13 498.39,522.13 560.14,522.13 621.89,522.13 683.64,522.13 ' style='stroke-width: 1.07; stroke: #0000FF; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
 <polyline points='683.64,302.50 621.89,302.50 560.14,302.50 498.39,302.50 436.63,302.50 374.88,302.50 313.13,302.50 251.37,302.50 189.62,302.50 127.87,302.50 66.11,302.50 ' style='stroke-width: 1.07; stroke: #0000FF; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
 <line x1='35.24' y1='412.31' x2='714.52' y2='412.31' style='stroke-width: 1.07; stroke-linecap: butt;' />
@@ -74,6 +74,6 @@
 <polyline points='32.50,62.42 35.24,62.42 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='374.88' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='23.86px' lengthAdjust='spacingAndGlyphs'>Lags</text>
 <text transform='translate(13.05,292.27) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Values</text>
-<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='18.34px' lengthAdjust='spacingAndGlyphs'>NA</text>
+<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='148.95px' lengthAdjust='spacingAndGlyphs'>Auto-correlation of Series</text>
 </g>
 </svg>

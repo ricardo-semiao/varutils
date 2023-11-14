@@ -15,7 +15,7 @@ setup_ggvar_dispersion <- function(x, series) {
 #'
 #' @param x A "varest" object to get residuals and fitted values from.
 #' @eval param_series()
-#' @eval param_args(c("geom_point", "geom_hline", "geom_facet"))
+#' @eval param_args(c("geom_point", "geom_hline", "facet_wrap"))
 #'
 #' @return An object of class \code{ggplot}.
 #'

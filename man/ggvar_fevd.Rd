@@ -9,28 +9,31 @@ ggvar_fevd(
   n.ahead = NULL,
   series = NULL,
   geom = "bar",
-  palette = NULL,
-  scales = "fixed",
-  ncol = 1,
+  colors = NULL,
+  args_geom = list(),
+  args_facet = list(),
   ...
 )
 }
 \arguments{
-\item{x}{A "varest" object to pass to \link[vars]{fevd}, or, directly, a "varfevd" object.}
+\item{x}{A "varest" object to pass to \link[vars]{fevd}, or, directly, a
+"varfevd" object.}
 
-\item{n.ahead}{An integer. The size of the forecast horizon, passed to \link[vars]{fevd}. Unused if `x` is "varfevd".}
+\item{n.ahead}{An integer. The size of the forecast horizon, passed to
+\link[vars]{fevd}. Unused if `x` is a "varfevd" object.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
-\item{geom}{The ggplot geom used to create the plot, "bar" for \link[ggplot2]{geom_bar} (the default), "area" for \link[ggplot2]{geom_area}, or "line" for \link[ggplot2]{geom_line}.}
+\item{geom}{The ggplot geom used to create the plot, 'segment' (the default) for \link[ggplot2]{geom_segment}, 'area' for \link[ggplot2]{geom_area}, 'line' for \link[ggplot2]{geom_line}.}
 
-\item{palette}{A vector of colors for each variable. See \code{vignette("palettes")}.}
+\item{colors}{A vector of colors for each variable. Passed to\link[ggplot2]{scale_color_manual}. See \code{vignette("colors")}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_geom}{Arguments passed to the chosen \code{geom}.}
 
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 
-\item{...}{Additional arguments passed to the ggplot geom defined by \code{geom}.}
+\item{...}{If \code{geom="line"}, additional arguments to
+\link[ggplot2]{geom_point}}
 }
 \value{
 An object of class \code{ggplot}.

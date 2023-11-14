@@ -32,6 +32,11 @@ param_geom <- function(fun_names) {
 }
 
 
+param_args_geom <- function() {
+  "@param args_geom Arguments passed to the chosen \\code{geom}."
+}
+
+
 param_facet <- function(value) {
   paste0(
     "@param facet The facet \"engine\" to be used. 'ggplot2' for ",
@@ -40,14 +45,8 @@ param_facet <- function(value) {
 }
 
 
-param_palette <- function() {
-  "@param palette A vector of colors for each variable. See \\code{vignette(\"palettes\")}."
-}
-
-
 param_args <- function(fun_name) {
-  param <- ifelse(
-    grepl("facet", fun_name),
+  param <- ifelse(grepl("facet", fun_name),
     "args_facet", gsub("geom_(.+)", "args_\\1", fun_name)
   )
 
@@ -57,6 +56,23 @@ param_args <- function(fun_name) {
     fun_name, "}."
   )
 }
+
+
+param_colors <- function() {
+  paste0(
+    "@param colors A vector of colors for each variable. Passed to",
+    "\\link[ggplot2]{scale_color_manual}. See \\code{vignette(\"colors\")}."
+  )
+}
+
+
+param_linetypes <- function() {
+  paste0(
+    "@param linetypes A vector of line types (original, predicted). Passed to",
+    "\\link[ggplot2]{scale_linetype_manual}."
+  )
+}
+
 
 param_dots <- function(fun_name) {
   fun <- strsplit(fun_name, "::")[[1]]

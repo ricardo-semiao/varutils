@@ -1,5 +1,5 @@
 # Seed and variables for the tests:
-set.seed(091127) # https://www.national-lottery.co.uk/results
+set.seed(91127)
 
 args <- list(
   df = list(
@@ -24,12 +24,9 @@ test_combinations("ggvar_values", args$var, "x=varest")
 test_that("'external' args combinations work", {
   expect_doppelganger("external", ggvar_values(vars::VAR(freeny[-2]),
     index = -10:27,
-    scales = "free_y", ncol = 2, palette = c("pink")
+    args_line = list(linewidth = 2),
+    args_facet = list(scales = "free_y", ncol = 2)
   ))
 })
 
 set.seed(NULL)
-
-# test_active_file()
-
-# Old tests:

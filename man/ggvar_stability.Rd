@@ -15,19 +15,27 @@ ggvar_stability(
 )
 }
 \arguments{
-\item{x}{A "varest" object to pass to \link[vars]{stability}, or, directly, a "varstabil" object.}
+\item{x}{A "varest" object to pass to \link[vars]{stability}, or, directly, a
+"varstabil" object.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
 \item{ci}{The level of confidence for the \link[strucchange]{boundary}.}
 
 \item{...}{Further arguments passed to \link[strucchange]{boundary}.}
+
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
+
+\item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
+
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots the result of a \link[vars]{stability} call. Confidence intevals are calculated using \link[strucchange]{boundary}.
+Plots the result of a \link[vars]{stability} call. Confidence intevals are
+ calculated using \link[strucchange]{boundary}.
 }
 \examples{
 ggvar_stability(vars::VAR(freeny[-2]))

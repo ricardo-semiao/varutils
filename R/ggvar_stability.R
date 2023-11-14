@@ -10,12 +10,15 @@ setup_ggvar_stability <- function(x, series) {
 
 #' Plot for Structural Stability of a VAR
 #'
-#' Plots the result of a \link[vars]{stability} call. Confidence intevals are calculated using \link[strucchange]{boundary}.
+#' Plots the result of a \link[vars]{stability} call. Confidence intevals are
+#'  calculated using \link[strucchange]{boundary}.
 #'
-#' @param x A "varest" object to pass to \link[vars]{stability}, or, directly, a "varstabil" object.
-#' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
+#' @param x A "varest" object to pass to \link[vars]{stability}, or, directly, a
+#'  "varstabil" object.
+#' @eval param_series()
 #' @param ci The level of confidence for the \link[strucchange]{boundary}.
 #' @param ... Further arguments passed to \link[strucchange]{boundary}.
+#' @eval param_args(c("geom_line", "geom_hline", "facet_wrap"))
 #'
 #' @return An object of class \code{ggplot}.
 #'

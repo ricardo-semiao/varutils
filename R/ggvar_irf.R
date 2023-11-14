@@ -1,7 +1,6 @@
 #' @noRd
 setup_ggvar_irf <- function(
-    x, n.ahead, series_impulse, series_response,
-    facet, ci, palette) {
+    x, n.ahead, series_impulse, series_response, ci, facet) {
   test$class_arg(x, c("varirf", "varest"))
   test$series(series_impulse, x, "impulse")
   test$series(series_response, x, "response")
@@ -12,14 +11,9 @@ setup_ggvar_irf <- function(
       inherits(x, "varirf") || is.numeric(n.ahead)
   )
 
-  series_impulse <- series_impulse %||% get_names(x, "impulse")
-  series_response <- series_response %||% get_names(x, "response")
-  n <- max(length(series_impulse), length(series_response))
-
   list(
-    series_impulse = series_impulse,
-    series_response = series_response,
-    palette = get_pallete(palette, n)
+    series_impulse = series_impulse %||% get_names(x, "impulse"),
+    series_response = series_response %||% get_names(x, "response")
   )
 }
 
@@ -27,34 +21,41 @@ setup_ggvar_irf <- function(
 #'
 #' Plots the result of a \link[vars]{irf} call.
 #'
-#' @param x A "varest" object to pass to \link[vars]{irf}, or, directly, a "varirf" object.
-#' @param n.ahead An integer. The size of the forecast horizon, passed to \link[vars]{irf}. Unused if `x` is "varirf".
-#' @param series_impulse A character vector with variables to consider for the impulses. Defaults to all (\code{NULL}).
-#' @param series_response A character vector with variables to consider for the responses. Defaults to all (\code{NULL}).
-#' @param facet The facet "engine" to be used. "ggplot2" for \link[ggplot2]{facet_grid}, "ggh4x" for \link[ggh4x]{facet_grid2}.
-#' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
-#' @param ci The level of confidence for the \link[vars]{irf}. Set to \code{FALSE} to omit.
-#' @param ... Further arguments passed to \link[vars]{irf}.
-#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param independent For varying the scales of each cell. See \link[ggh4x]{facet_grid2}.
+#' @param x A "varest" object to pass to \link[vars]{irf}, or, directly, a
+#'  "varirf" object.
+#' @param n.ahead An integer. The size of the forecast horizon, passed to
+#'  \link[vars]{irf}. Unused if \code{x} is "varirf".
+#' @param series_impulse A character vector with variables to consider for the
+#'  impulses. Defaults to all (\code{NULL}).
+#' @param series_response A character vector with variables to consider for the
+#'  responses. Defaults to all (\code{NULL}).
+#' @param ci The level of confidence for the \link[vars]{irf}. Set to
+#'  \code{FALSE} to omit.
+#' @param ... Additional arguments passed to \link[vars]{irf}.
+#' @eval param_facet()
+#' @eval param_args(c("geom_line", "geom_hline", "geom_ribbon", "facet_grid"))
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10, scales = "free_y")
+#' ggvar_irf(vars::VAR(freeny[-2]), n.ahead = 10,
+#'  args_facet = list(scales = "free_y")
+#' )
 #'
 #' @export
 ggvar_irf <- function(
     x, n.ahead = NULL, series_impulse = NULL, series_response = NULL,
     ci = 0.95, ...,
-    facet = "ggplot", palette = c("black", "blue", "gray"),
-    scales = "fixed", independent = "none") {
+    facet = "ggplot",
+    args_line = list(),
+    args_hline = list(),
+    args_ribbon = list(fill = NA, linetype = 2, color = "blue"),
+    args_facet = list()) {
   # Setup:
   setup <- setup_ggvar_irf(
-    x, n.ahead, series_impulse, series_response,
-    facet, ci, palette
+    x, n.ahead, series_impulse, series_response, ci, facet
   )
-  reassign <- c("series_impulse", "series_impulse", "palette")
+  reassign <- c("series_impulse", "series_impulse")
   list2env(setup[reassign], envir = rlang::current_env())
 
   # Data:
@@ -71,7 +72,9 @@ ggvar_irf <- function(
     purrr::imap_dfr(function(x, name) {
       data.frame(
         serie = name,
-        purrr::imap_dfr(x, ~ data.frame(effect_on = .y, lead = seq_len(nrow(.x)), .x))
+        purrr::imap_dfr(x, ~ data.frame(
+          effect_on = .y, lead = seq_len(nrow(.x)), .x
+        ))
       )
     }) %>%
     tidyr::pivot_longer(-c("serie", "effect_on", "lead"),
@@ -82,17 +85,17 @@ ggvar_irf <- function(
   # Graph:
   ggplot_add <- list(
     if (!isFALSE(ci)) {
-      ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
-        fill = palette[3], color = palette[2], linetype = 2
-      )
+      inject(ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
+        !!!args_ribbon
+      ))
     },
-    define_facet(facet, "effect_of", "effect_on", scales, independent)
+    inject(define_facet(facet, "effect_of", "effect_on", !!!args_facet))
   )
 
   ggplot(data, aes(.data$lead, .data$irf)) +
     ggplot_add +
-    ggplot2::geom_line(color = palette[1]) +
-    ggplot2::geom_hline(yintercept = 0) +
+    inject(ggplot2::geom_line(!!!args_line)) +
+    inject(ggplot2::geom_hline(yintercept = 0, !!!args_hline)) +
     create_sec_axis() +
     ggplot2::labs(
       title = "VAR Impulse Response Functions",

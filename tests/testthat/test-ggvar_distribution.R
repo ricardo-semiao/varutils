@@ -1,5 +1,5 @@
 # Seed and variables for the tests:
-set.seed(091127) # https://www.national-lottery.co.uk/results
+set.seed(91127)
 
 args <- list(
   df = list(
@@ -26,24 +26,10 @@ test_combinations("ggvar_distribution", args$var, "x=varest")
 
 test_that("'external' args combinations work", {
   expect_doppelganger("external", ggvar_distribution(vars::VAR(freeny[-2]),
-    bins = 45, linewidth = 2,
-    palette = c("pink", "purple")
+    args_histogram = list(bins = 45),
+    args_line = list(linewidth = 2),
+    args_facet = list(scales = "free_y", ncol = 1)
   ))
 })
 
 set.seed(NULL)
-
-# test_active_file()
-
-# Old tests:
-# test_that("'internal' args combinations with data.frame x respect snapshots", {
-#  test_combinations("ggvar_distribution", args$df) %>% lapply(eval)
-# })
-#
-# test_that("'internal' args combinations with mts x respect snapshots", {
-#  test_combinations("ggvar_distribution", args$mts) %>% lapply(eval)
-# })
-#
-# test_that("'internal' args combinations with varest x respect snapshots", {
-#  test_combinations("ggvar_distribution", args$var) %>% lapply(eval)
-# })

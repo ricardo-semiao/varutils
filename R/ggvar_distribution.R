@@ -1,5 +1,5 @@
 #' @noRd
-setup_ggvar_distribution <- function(x, series, plot_normal, palette) {
+setup_ggvar_distribution <- function(x, series, plot_normal) {
   test$class_arg(x, c("data.frame", "matrix", "varest"))
   x <- test$dataset_arg(x)
   test$series(series, x)
@@ -16,24 +16,20 @@ setup_ggvar_distribution <- function(x, series, plot_normal, palette) {
   list(
     x = x,
     series = series %||% get_names(x),
-    palette = get_pallete(palette, 2),
     title = title
   )
 }
 
 #' Plot VAR Residuals Distribution
 #'
-#' Plots the histogram of the residuals of a VAR model, or of the variables in a dataset, overlapped with a normal curve.
+#' Plots the histogram of the residuals of a VAR model, or of the variables in a
+#'  dataset, overlapped with a normal curve.
 #'
-#' @param x Either a "varest" object for plotting the residuals, or an dataset (object coercible to data.frame) with numeric variables.
-#' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
+#' @param x Either a "varest" object for plotting the residuals, or an dataset
+#'  (object coercible to data.frame) with numeric variables.
+#' @eval param_series()
 #' @param plot_normal Logical, whether or not the normal curve should be plotted.
-#' @param palette A vector of colors (bins, normal curve). See \code{vignette("palettes")}.
-#' @param bins An integer. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.
-#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param linewidth An integer. The linewidth of the normal curve line, passed to \link[ggplot2]{geom_line}.
-#' @param ... Additional arguments passed to \link[ggplot2]{geom_histogram}.
+#' @eval param_args(c("geom_histogram", "geom_line", "facet_wrap"))
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -43,11 +39,12 @@ setup_ggvar_distribution <- function(x, series, plot_normal, palette) {
 #' @export
 ggvar_distribution <- function(
     x, series = NULL, plot_normal = TRUE,
-    palette = c("grey", "black"), bins = 30,
-    linewidth = 1, scales = "fixed", ncol = 1, ...) {
+    args_histogram = list(),
+    args_line = list(),
+    args_facet = list()) {
   # Setup:
-  setup <- setup_ggvar_distribution(x, series, plot_normal, palette)
-  reassign <- c("x", "series", "palette")
+  setup <- setup_ggvar_distribution(x, series, plot_normal)
+  reassign <- c("x", "series")
   list2env(setup[reassign], envir = rlang::current_env())
 
   # Data:
@@ -65,21 +62,19 @@ ggvar_distribution <- function(
         density = stats::dnorm(.data$residual, sd = stats::sd(col))
       )
     })
-    ggplot_add <- list(ggplot2::geom_line(aes(y = .data$density, color = "Normal curve"),
-      data = data_density, linewidth = linewidth
-    ))
+    ggplot_add <- list(inject(ggplot2::geom_line(aes(y = .data$density),
+      !!!args_line, data = data_density
+    )))
   } else {
     ggplot_add <- list(NULL)
   }
 
   # Graph:
   ggplot(data_histogram, aes(x = .data$residual)) +
-    ggplot2::geom_histogram(aes(y = ggplot2::after_stat(.data$density)),
-      fill = palette[1], bins = bins, ...
-    ) +
+    inject(ggplot2::geom_histogram(aes(y = ggplot2::after_stat(.data$density)),
+      !!!args_histogram
+    )) +
     ggplot_add +
-    ggplot2::scale_color_manual(values = palette[2], name = "Legend") +
-    ggplot2::facet_wrap(vars(.data$serie), ncol = ncol, scales = scales) +
-    ggplot2::theme(legend.position = "bottom") +
+    inject(ggplot2::facet_wrap(vars(.data$serie), !!!args_facet)) +
     ggplot2::labs(title = setup$title, x = "Values", y = "Density")
 }

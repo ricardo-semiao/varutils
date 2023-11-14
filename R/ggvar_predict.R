@@ -1,7 +1,5 @@
 #' @noRd
-setup_ggvar_predict <- function(
-    x, n.ahead, data_test, series,
-    index, ci, palette) {
+setup_ggvar_predict <- function(x, n.ahead, data_test, series, index, ci) {
   test$class_arg(x, c("varest", "varprd"))
   test$class_arg(data_test, c("data.frame", "matrix", "NULL"))
   data_test <- test$dataset_arg(data_test)
@@ -28,49 +26,56 @@ setup_ggvar_predict <- function(
     data_test = data_test,
     series = series %||% get_names(x),
     index = index,
-    palette = get_pallete(palette, 4),
     guide = if (is.null(data_test)) "none" else "legend"
   )
 }
 
 #' Plot the Predicted Values of a VAR
 #'
-#' Plots the result of a \link[vars]{predict.varest} call. Has an option to overlay it with the true variables, if provided a test dataset.
+#' Plots the result of a \link[vars]{predict.varest} call. Has an option to
+#'  overlay it with the true variables, if provided a test dataset.
 #'
-#' @param x A "varest" object to get predictions from, or, directly, a "varprd" object.
-#' @param data_test A test data set (object coercible to data.frame), with the actual series values. If \code{NULL}, no comparison is made.
-#' @param n.ahead An integer. The number of periods to predict, passed to \link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of the "varprd" object (\code{NULL}).
-#' @param series A character vector with variables to consider. Defaults to all (\code{NULL}).
-#' @param index A vector of labels to the x-axis, normally dates. Must have length equal to \code{n.ahead}. Defaults to a numeric sequence.
-#' @param ci The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit. Passed to \link[stats]{predict}.
-#' @param dumvar Exogenous variables to be passed to \link[stats]{predict}.
-#' @param palette A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.
-#' @param linetypes A line types for \link[ggplot2]{geom_ribbon}.
-#' @param alpha A double. The alpha aesthetic for the fill of \link[ggplot2]{geom_ribbon}.
-#' @param scales "fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.
-#' @param ncol An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.
-#' @param ... Additional arguments passed to \link[ggplot2]{geom_line}.
+#' @param x A "varest" object to get predictions from, or, directly, a
+#'  "varprd" object.
+#' @param data_test A test data set (object coercible to data.frame), with the
+#'  actual series values. If \code{NULL}, no comparison is made.
+#' @param n.ahead An integer. The number of periods to predict, passed to
+#'  \link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of
+#'  the "varprd" object (\code{NULL}).
+#' @eval param_series()
+#' @eval param_index("\\code{n.ahead}")
+#' @param ci The level of confidence for the prediction confidence interval. Set
+#'  to \code{FALSE} to omit. Passed to \link[stats]{predict}.
+#' @param ... Additional arguments passed to \link[stats]{predict}.
+#' @eval param_linetypes()
+#' @eval param_args(c("geom_line", "geom_ribbon", "facet_wrap"))
 #'
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_predict(stats::predict(vars::VAR(freeny[-2])), scales = "free_y")
-#' ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ], scales = "free_y")
+#' ggvar_predict(stats::predict(vars::VAR(freeny[-2])),
+#'   args_facet = list(scales = "free_y")
+#' )
+#' ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ],
+#'   args_facet = list(scales = "free_y")
+#' )
 #'
 #' @export
 ggvar_predict <- function(
     x, data_test = NULL, n.ahead = NULL, series = NULL, index = NULL,
-    ci = 0.95, dumvar = NULL,
-    palette = c("blue", "black", "darkblue", "gray"),
-    linetypes = "dashed", alpha = 0.8, scales = "fixed", ncol = 1, ...) {
+    ci = 0.95, ...,
+    linetypes = c("solid", "dashed"),
+    args_line = list(),
+    args_ribbon = list(fill = NA, linetype = 2, color = "blue"),
+    args_facet = list()) {
   # Setup:
-  setup <- setup_ggvar_predict(x, n.ahead, data_test, series, index, ci, palette)
-  reassign <- c("n.ahead", "data_test", "series", "index", "palette")
+  setup <- setup_ggvar_predict(x, n.ahead, data_test, series, index, ci)
+  reassign <- c("n.ahead", "data_test", "series", "index")
   list2env(setup[reassign], envir = rlang::current_env())
 
   # Data:
   pred <- if (inherits(x, "varest")) {
-    stats::predict(x, n.ahead = n.ahead, ci = ci, dumvar = dumvar)
+    stats::predict(x, n.ahead = n.ahead, ci = ci, ...)
   } else {
     x
   }
@@ -107,20 +112,19 @@ ggvar_predict <- function(
   # Graph:
   ggplot_add <- list(
     if (!isFALSE(ci)) {
-      ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
-        fill = palette[4], color = palette[3],
-        linetype = linetypes[1], alpha = alpha
-      )
+      inject(ggplot2::geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper),
+        !!!args_ribbon
+      ))
     }
   )
 
   ggplot(data_pred, aes(.data$index, .data$value)) +
     ggplot_add +
-    ggplot2::geom_line(aes(color = .data$type), ...) +
-    ggplot2::facet_wrap(vars(.data$serie), scales = scales, ncol = ncol) +
-    ggplot2::scale_color_manual(values = palette[1:2], guide = setup$guide) +
+    inject(ggplot2::geom_line(aes(linetype = .data$type), !!!args_line)) +
+    inject(ggplot2::facet_wrap(vars(.data$serie), !!!args_facet)) +
+    ggplot2::scale_linetype_manual(values = linetypes, guide = setup$guide) +
     ggplot2::labs(
       title = "VAR Predicted Values", x = "Index",
-      y = "Values", color = "Series"
+      y = "Values", linetypes = "Type"
     )
 }

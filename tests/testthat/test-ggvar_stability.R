@@ -1,5 +1,5 @@
 # Seed and variables for the tests:
-set.seed(091127) # https://www.national-lottery.co.uk/results
+set.seed(91127)
 
 args <- list(
   var = list(
@@ -25,5 +25,3 @@ test_that("'external' args combinations work", {
 })
 
 set.seed(NULL)
-
-# test_active_file()

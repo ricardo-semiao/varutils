@@ -21,7 +21,7 @@ ggvar_dispersion(
 
 \item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{args_facet}{Aditional arguments passed to \link[ggplot2]{geom_facet}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.

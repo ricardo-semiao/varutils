@@ -45,7 +45,9 @@ setup_ggvar_acf <- function(x, series, ci, type, lag.max, geom, facet = NULL) {
 #'  \code{FALSE} to omit the \link[ggplot2]{geom_ribbon}.
 #' @eval param_dots("stats::acf")
 #' @eval param_geom(c("geom_segment", "geom_area"))
-#' @eval param_args(c("geom_ribbon", "geom_hline", "geom_facet"))
+#' @eval param_facet()
+#' @eval param_args_geom()
+#' @eval param_args(c("geom_ribbon", "geom_hline", "facet_wrap"))
 #'
 #' @return An object of class \code{ggplot}.
 #'
@@ -65,7 +67,7 @@ ggvar_acf <- function(
     args_facet = list()) {
   # Setup:
   setup <- setup_ggvar_acf(x, series, ci, type, lag.max, geom)
-  reassign <- c("x", "series", "ci", "geom", "palette", "lag.max")
+  reassign <- c("x", "series", "ci", "geom", "lag.max")
   list2env(setup[reassign], envir = rlang::current_env())
 
   title <- switch(type,
