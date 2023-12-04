@@ -10,9 +10,6 @@ Description: Functions for commonly needed ggplot graphs for Vector
     residual analysis. Soon to contain functions for common tests and
     statistics, and other VAR-like objects.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
 URL: https://https://github.com/ricardo-semiao/varutils,
     https://ricardo-semiao.github.io/varutils/
 BugReports: https://github.com/ricardo-semiao/varutils/issues
