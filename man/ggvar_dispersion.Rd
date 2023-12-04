@@ -7,35 +7,30 @@
 ggvar_dispersion(
   x,
   series = NULL,
-  palette = c("black", "black"),
-  scales = "fixed",
-  ncol = 1,
-  alpha = 0.5,
-  ...
+  args_point = list(),
+  args_hline = list(),
+  args_facet = list()
 )
 }
 \arguments{
 \item{x}{A "varest" object to get residuals and fitted values from.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
-\item{palette}{A vector of colors (points, x-axis line). See \code{vignette("palettes")}.}
+\item{args_point}{Aditional arguments passed to \link[ggplot2]{geom_point}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
-
-\item{alpha}{A double. The alpha aesthetic for the points, passed to \link[ggplot2]{geom_point}.}
-
-\item{...}{Additional arguments passed to \link[ggplot2]{geom_point}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots a scatterplot of the residuals versus fitted values of a VAR model, using ggplot2.
+Plots a scatterplot of the residuals versus fitted values of a VAR model,
+ using ggplot2.
 }
 \examples{
-ggvar_dispersion(vars::VAR(freeny[-2]), scales = "free_y")
+ggvar_dispersion(vars::VAR(freeny[-2]), args_facet = list(scales = "free_x"))
 
 }

@@ -27,47 +27,52 @@ suported_palettes <- list(
 )
 # knitr::kable(sapply(suported_palettes, \(x) paste(x, collapse = ", ")))
 
-get_pallete <- function(palette, n, ...) {{ if (is.null(palette)) {
-  grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
-} else if (length(palette) == 1 && grepl("::", palette)) {
-  pkg_pal <- strsplit(palette, "::")[[1]]
-
-  if (!rlang::is_installed(pkg_pal[1])) {
-    stop(paste0("Package ", pkg_pal[1], " isn't installed"))
-  }
-  if (!pkg_pal[2] %in% suported_palettes[[pkg_pal[1]]]) {
-    stop(paste0(
-      "With package ", pkg_pal[1], ", palette should be one of:\n    ",
-      suported_palettes[[pkg_pal[1]]]
-    ))
+get_pallete <- function(palette, n, ...) {
+  if (is.null(palette)) {
+    return(grDevices::hcl(
+      h = seq(15, 375, length = n + 1), l = 65, c = 100
+    )[1:n])
   }
 
-  if (pkg_pal[1] == "ggplot2") {
-    pkg_pal[2]
-  } else if (pkg_pal[1] == "RColorBrewer") {
-    RColorBrewer::brewer.pal(n, pkg_pal[2], ...)
-  } else if (pkg_pal[1] %in% c("base", "viridis", "ggsci")) {
-    match.fun(palette)(n, ...)[1:n]
-  }
-} else if (is.atomic(palette)) {
-  palette
-} # vector of colors
+  if (length(palette) == 1 && grepl("::", palette)) {
+    pkg_pal <- strsplit(palette, "::")[[1]]
 
-else {
+    if (!rlang::is_installed(pkg_pal[1])) {
+      stop(paste0("Package ", pkg_pal[1], " isn't installed"))
+    }
+    if (!pkg_pal[2] %in% suported_palettes[[pkg_pal[1]]]) {
+      stop(paste0(
+        "With package ", pkg_pal[1], ", palette should be one of:\n    ",
+        suported_palettes[[pkg_pal[1]]]
+      ))
+    }
+
+    if (pkg_pal[1] == "ggplot2") {
+      return(pkg_pal[2])
+    } else if (pkg_pal[1] == "RColorBrewer") {
+      return(RColorBrewer::brewer.pal(n, pkg_pal[2], ...))
+    } else if (pkg_pal[1] %in% c("base", "viridis", "ggsci")) {
+      return(match.fun(palette)(n, ...)[1:n])
+    }
+  }
+
+  if (is.atomic(palette)) {
+    return(palette)
+  }
+
   stop("Unrecognized `palette` argument")
-} }
 }
 
 
 # Ggplot helpers ----------------------------------------------------------
-create_sec_axis <- function() {
+create_sec_axis <- function(xseclab = "Impulse", yseclab = "Response") {
   my_sec_axis <- function(name) {
     ggplot2::sec_axis(~., name = name, breaks = NULL, labels = NULL)
   }
 
   list(
-    ggplot2::scale_x_continuous(sec.axis = my_sec_axis("Impulse")),
-    ggplot2::scale_y_continuous(sec.axis = my_sec_axis("Response")),
+    ggplot2::scale_x_continuous(sec.axis = my_sec_axis(xseclab)),
+    ggplot2::scale_y_continuous(sec.axis = my_sec_axis(yseclab)),
     ggplot2::theme(
       axis.title.x.top = ggplot2::element_text(vjust = 1.5),
       axis.title.y.right = ggplot2::element_text(vjust = 1.5)
@@ -76,19 +81,16 @@ create_sec_axis <- function() {
 }
 
 
-define_facet <- function(facet, var_row, var_col, scales, independent) {
+define_facet <- function(facet, var_row, var_col, ...) {
   if (facet == "ggh4x") {
     if (!rlang::is_installed("ggh4x")) {
       warning("Package ggh4x is not installed. Coercing `facet = 'ggplot'`.")
       facet <- "ggplot"
     } else {
-      ggh4x::facet_grid2(stats::reformulate(var_row, var_col),
-        scales = scales,
-        independent = independent
-      )
+      ggh4x::facet_grid2(stats::reformulate(var_row, var_col), ...)
     }
   } else if (facet == "ggplot") {
-    ggplot2::facet_grid(stats::reformulate(var_row, var_col), scales = scales)
+    ggplot2::facet_grid(stats::reformulate(var_row, var_col), ...)
   } else {
     stop("Invalid `facet` argument.")
   }
@@ -181,6 +183,22 @@ test <- list(
       }
     }
     return(arg)
+  },
+  ggplot_arg = function(args) {
+    arg_name <- deparse(rlang::ensym(arg))
+    arg_subname <- gsub("args_(.+)", "\\1", arg_name)
+    if (arg_subname == "facet") {
+      cond <- all(names(args) %in% union(
+        names(formals(ggplot2::facet_grid)),
+        names(formals(ggplot2::facet_wrap))
+      ))
+      if (!cond) warning(paste0("Unknown arguments in ", arg_name))
+    } else {
+      cond <- all(names(args) %in% names(
+        formals(match.fun(paste0("ggplot2::geom_", arg_subname)))
+      ))
+      if (!cond) warning(paste0("Unknown arguments in ", arg_name))
+    }
   }
 )
 

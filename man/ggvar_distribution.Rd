@@ -8,38 +8,31 @@ ggvar_distribution(
   x,
   series = NULL,
   plot_normal = TRUE,
-  palette = c("grey", "black"),
-  bins = 30,
-  linewidth = 1,
-  scales = "fixed",
-  ncol = 1,
-  ...
+  args_histogram = list(bins = 30),
+  args_line = list(),
+  args_facet = list()
 )
 }
 \arguments{
-\item{x}{Either a "varest" object for plotting the residuals, or an dataset (object coercible to data.frame) with numeric variables.}
+\item{x}{Either a "varest" object for plotting the residuals, or an dataset
+(object coercible to data.frame) with numeric variables.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
 \item{plot_normal}{Logical, whether or not the normal curve should be plotted.}
 
-\item{palette}{A vector of colors (bins, normal curve). See \code{vignette("palettes")}.}
+\item{args_histogram}{Aditional arguments passed to \link[ggplot2]{geom_histogram}.}
 
-\item{bins}{An integer. The number of histogram bins, passed to \link[ggplot2]{geom_histogram}.}
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 
-\item{linewidth}{An integer. The linewidth of the normal curve line, passed to \link[ggplot2]{geom_line}.}
-
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
-
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
-
-\item{...}{Additional arguments passed to \link[ggplot2]{geom_histogram}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots the histogram of the residuals of a VAR model, or of the variables in a dataset, overlapped with a normal curve.
+Plots the histogram of the residuals of a VAR model, or of the variables in a
+ dataset, overlapped with a normal curve.
 }
 \examples{
 ggvar_distribution(vars::VAR(freeny[-2]))

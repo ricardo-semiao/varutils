@@ -11,50 +11,54 @@ ggvar_predict(
   series = NULL,
   index = NULL,
   ci = 0.95,
-  dumvar = NULL,
-  palette = c("blue", "black", "darkblue", "gray"),
-  linetypes = "dashed",
-  alpha = 0.8,
-  scales = "fixed",
-  ncol = 1,
-  ...
+  ...,
+  linetypes = c("solid", "dashed"),
+  args_line = list(),
+  args_ribbon = list(fill = NA, linetype = 2, color = "blue"),
+  args_facet = list()
 )
 }
 \arguments{
-\item{x}{A "varest" object to get predictions from, or, directly, a "varprd" object.}
+\item{x}{A "varest" object to get predictions from, or, directly, a
+"varprd" object.}
 
-\item{data_test}{A test data set (object coercible to data.frame), with the actual series values. If \code{NULL}, no comparison is made.}
+\item{data_test}{A test data set (object coercible to data.frame), with the
+actual series values. If \code{NULL}, no comparison is made.}
 
-\item{n.ahead}{An integer. The number of periods to predict, passed to \link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of the "varprd" object (\code{NULL}).}
+\item{n.ahead}{An integer. The number of periods to predict, passed to
+\link[stats]{predict}. Defaults to \code{nrow(data_test)} or the horizon of
+the "varprd" object (\code{NULL}).}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
-\item{index}{A vector of labels to the x-axis, normally dates. Must have length equal to \code{n.ahead}. Defaults to a numeric sequence.}
+\item{index}{A vector of labels to the x-axis, normally dates. Must have  length equal to \code{n.ahead}. Defaults to a numeric sequence.}
 
-\item{ci}{The level of confidence for the ACF confidence interval. Set to \code{FALSE} to omit. Passed to \link[stats]{predict}.}
+\item{ci}{The level of confidence for the prediction confidence interval. Set
+to \code{FALSE} to omit. Passed to \link[stats]{predict}.}
 
-\item{dumvar}{Exogenous variables to be passed to \link[stats]{predict}.}
+\item{...}{Additional arguments passed to \link[stats]{predict}.}
 
-\item{palette}{A vector of colors. Just one for \code{ggvar_fit}, one for each variable for \code{ggvar_fit_colored}. See \code{vignette("palettes")}.}
+\item{linetypes}{A vector of line types (original, predicted). Passed to\link[ggplot2]{scale_linetype_manual}.}
 
-\item{linetypes}{A line types for \link[ggplot2]{geom_ribbon}.}
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 
-\item{alpha}{A double. The alpha aesthetic for the fill of \link[ggplot2]{geom_ribbon}.}
+\item{args_ribbon}{Aditional arguments passed to \link[ggplot2]{geom_ribbon}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
-
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
-
-\item{...}{Additional arguments passed to \link[ggplot2]{geom_line}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots the result of a \link[vars]{predict.varest} call. Has an option to overlay it with the true variables, if provided a test dataset.
+Plots the result of a \link[vars]{predict.varest} call. Has an option to
+ overlay it with the true variables, if provided a test dataset.
 }
 \examples{
-ggvar_predict(stats::predict(vars::VAR(freeny[-2])), scales = "free_y")
-ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ], scales = "free_y")
+ggvar_predict(stats::predict(vars::VAR(freeny[-2])),
+  args_facet = list(scales = "free_y")
+)
+ggvar_predict(vars::VAR(freeny[-2][1:30, ]), freeny[-2][31:39, ],
+  args_facet = list(scales = "free_y")
+)
 
 }

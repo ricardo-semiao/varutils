@@ -9,33 +9,35 @@ ggvar_stability(
   series = NULL,
   ci = 0.95,
   ...,
-  palette = c("black", "blue"),
-  scales = "fixed",
-  ncol = 1
+  args_line = list(),
+  args_hline = list(linetype = 2, color = "blue"),
+  args_facet = list()
 )
 }
 \arguments{
-\item{x}{A "varest" object to pass to \link[vars]{stability}, or, directly, a "varstabil" object.}
+\item{x}{A "varest" object to pass to \link[vars]{stability}, or, directly, a
+"varstabil" object.}
 
-\item{series}{A character vector with variables to consider. Defaults to all (\code{NULL}).}
+\item{series}{A character vector with variables (column names) to consider. Defaults to all (\code{NULL}).}
 
 \item{ci}{The level of confidence for the \link[strucchange]{boundary}.}
 
 \item{...}{Further arguments passed to \link[strucchange]{boundary}.}
 
-\item{palette}{A vector of colors (line, conf. interval). See \code{vignette("palettes")}.}
+\item{args_line}{Aditional arguments passed to \link[ggplot2]{geom_line}.}
 
-\item{scales}{"fixed" (the default), "free", "free_x" or "free_y". passed to \link[ggplot2]{facet_wrap}.}
+\item{args_hline}{Aditional arguments passed to \link[ggplot2]{geom_hline}.}
 
-\item{ncol}{An integer. The number of facet columns, passed to \link[ggplot2]{facet_wrap}.}
+\item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 }
 \value{
 An object of class \code{ggplot}.
 }
 \description{
-Plots the result of a \link[vars]{stability} call. Confidence intevals are calculated using \link[strucchange]{boundary}.
+Plots the result of a \link[vars]{stability} call. Confidence intevals are
+ calculated using \link[strucchange]{boundary}.
 }
 \examples{
-ggvar_stability(vars::VAR(freeny[-2]), scales = "free_y")
+ggvar_stability(vars::VAR(freeny[-2]))
 
 }
