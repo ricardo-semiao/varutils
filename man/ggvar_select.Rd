@@ -29,6 +29,6 @@ An object of class \code{ggplot}.
 Plots the result of a call to \link[vars]{VARselect}.
 }
 \examples{
-ggvar_values(vars::VARselect(freeny[-2]), args_facet = list(scales = "free_y"))
+ggvar_select(vars::VARselect(freeny[-2]))
 
 }

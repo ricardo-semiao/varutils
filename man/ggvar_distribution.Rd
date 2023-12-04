@@ -8,7 +8,7 @@ ggvar_distribution(
   x,
   series = NULL,
   plot_normal = TRUE,
-  args_histogram = list(),
+  args_histogram = list(bins = 30),
   args_line = list(),
   args_facet = list()
 )

@@ -159,6 +159,6 @@
 <polyline points='40.32,340.55 43.06,340.55 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='378.79' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='26.91px' lengthAdjust='spacingAndGlyphs'>Index</text>
 <text transform='translate(13.05,292.27) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='33.64px' lengthAdjust='spacingAndGlyphs'>Values</text>
-<text x='43.06' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='158.49px' lengthAdjust='spacingAndGlyphs'>VAR Residuals Distribution</text>
+<text x='43.06' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='180.50px' lengthAdjust='spacingAndGlyphs'>VAR Residuals Historic Values</text>
 </g>
 </svg>

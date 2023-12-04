@@ -70,6 +70,6 @@
 <text x='651.91' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='62.62px' lengthAdjust='spacingAndGlyphs'>market.potential</text>
 <text x='651.91' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='42.56px' lengthAdjust='spacingAndGlyphs'>price.index</text>
 <text x='651.91' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='4.40px' lengthAdjust='spacingAndGlyphs'>y</text>
-<text x='32.79' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='140.12px' lengthAdjust='spacingAndGlyphs'>Time Series Distribution</text>
+<text x='32.79' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='162.14px' lengthAdjust='spacingAndGlyphs'>Time Series Historic Values</text>
 </g>
 </svg>

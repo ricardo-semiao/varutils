@@ -12,7 +12,7 @@
 #' @return An object of class \code{ggplot}.
 #'
 #' @examples
-#' ggvar_values(vars::VARselect(freeny[-2]), args_facet = list(scales = "free_y"))
+#' ggvar_select(vars::VARselect(freeny[-2]))
 #'
 #' @export
 ggvar_select <- function(
@@ -28,10 +28,10 @@ ggvar_select <- function(
     tibble::as_tibble() %>%
     dplyr::select(dplyr::any_of(criteria)) %>%
     dplyr::mutate(lag = 1:nrow(.)) %>%
-    tidyr::pivot_longer(-lag)
+    tidyr::pivot_longer(-"lag")
 
   # Graph:
-  ggplot(data, aes(lag, value, color = name)) +
+  ggplot(data, aes(.data$lag, .data$value, color = .data$name)) +
     inject(ggplot2::geom_line(!!!args_line)) +
     ggplot2::labs(
       title = "Information Criteria for Each Lag", color = "Criteria",

@@ -58,6 +58,6 @@
 <line x1='675.39' y1='300.25' x2='689.21' y2='300.25' style='stroke-width: 1.07; stroke: #00BFC4; stroke-linecap: butt;' />
 <text x='696.42' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>DAX</text>
 <text x='696.42' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='15.65px' lengthAdjust='spacingAndGlyphs'>SMI</text>
-<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='140.12px' lengthAdjust='spacingAndGlyphs'>Time Series Distribution</text>
+<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='162.14px' lengthAdjust='spacingAndGlyphs'>Time Series Historic Values</text>
 </g>
 </svg>

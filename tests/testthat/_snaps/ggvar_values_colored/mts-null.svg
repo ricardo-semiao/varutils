@@ -66,6 +66,6 @@
 <text x='692.03' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>DAX</text>
 <text x='692.03' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='22.49px' lengthAdjust='spacingAndGlyphs'>FTSE</text>
 <text x='692.03' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='15.65px' lengthAdjust='spacingAndGlyphs'>SMI</text>
-<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='140.12px' lengthAdjust='spacingAndGlyphs'>Time Series Distribution</text>
+<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='162.14px' lengthAdjust='spacingAndGlyphs'>Time Series Historic Values</text>
 </g>
 </svg>

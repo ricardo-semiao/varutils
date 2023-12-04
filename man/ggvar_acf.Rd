@@ -38,7 +38,7 @@ ggvar_ccf_grid(
 
 ggvar_ccf_ind(x, serie_x, serie_y, ...)
 
-ggvar_ccf_wrap(x, cols, ...)
+ggvar_ccf_wrap(x, series, ...)
 }
 \arguments{
 \item{x}{A dataset (object coercible to data.frame) or a "varest" object to
@@ -68,6 +68,9 @@ be either "correlation", "covariance", or "partial".}
 \item{args_facet}{Aditional arguments passed to \link[ggplot2]{facet_wrap}.}
 
 \item{facet}{The facet "engine" to be used. 'ggplot2' for \link[ggplot2]{facet_grid}, 'ggh4x' for \link[ggh4x]{facet_grid2}}
+
+\item{serie_x, serie_y}{Variables to chose for x and y axis in
+\code{ggvar_ccf_ind}.}
 }
 \value{
 An object of class \code{ggplot}.
@@ -80,7 +83,7 @@ An object of class \code{ggplot}.
 }
 \examples{
 ggvar_acf(freeny[-2], args_facet = list(scales = "free_y"))
-ggvar_ccf(freeny[-2], args_facet = list(scales = "free_y"))
+ggvar_ccf_grid(freeny[-2], args_facet = list(scales = "free_y"))
 ggvar_acf(vars::VAR(freeny[-2]), args_facet = list(scales = "free_y"))
 
 }

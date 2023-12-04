@@ -56,6 +56,6 @@
 <rect x='673.66' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='675.39' y1='291.61' x2='689.21' y2='291.61' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
 <text x='696.42' y='294.64' style='font-size: 8.80px; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>DAX</text>
-<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='140.12px' lengthAdjust='spacingAndGlyphs'>Time Series Distribution</text>
+<text x='42.58' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='162.14px' lengthAdjust='spacingAndGlyphs'>Time Series Historic Values</text>
 </g>
 </svg>

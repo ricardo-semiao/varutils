@@ -64,6 +64,6 @@
 <text x='651.91' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='62.62px' lengthAdjust='spacingAndGlyphs'>market.potential</text>
 <text x='651.91' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='42.56px' lengthAdjust='spacingAndGlyphs'>price.index</text>
 <text x='651.91' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='4.40px' lengthAdjust='spacingAndGlyphs'>y</text>
-<text x='47.96' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='158.49px' lengthAdjust='spacingAndGlyphs'>VAR Residuals Distribution</text>
+<text x='47.96' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='180.50px' lengthAdjust='spacingAndGlyphs'>VAR Residuals Historic Values</text>
 </g>
 </svg>

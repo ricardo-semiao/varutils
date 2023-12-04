@@ -29,8 +29,8 @@ setup_ggvar_acf <- function(x, series, ci, type, lag.max, geom, facet = NULL) {
 
 #' @noRd
 data_ggvar_ccf <- function(x, serie_x, serie_y, ...) {
-  ci <- qnorm((1 - 0.95) / 2) / sqrt(nrow(x))
-  temp_ccf <- ccf(x[[serie_x]], x[[serie_y]], plot = FALSE, ...)
+  ci <- stats::qnorm((1 - 0.95) / 2) / sqrt(nrow(x))
+  temp_ccf <- stats::ccf(x[[serie_x]], x[[serie_y]], plot = FALSE, ...)
 
   tibble::tibble(
     series = paste0(serie_x, " - ", serie_y),
@@ -51,6 +51,8 @@ data_ggvar_ccf <- function(x, serie_x, serie_y, ...) {
 #' @param x A dataset (object coercible to data.frame) or a "varest" object to
 #'  get residuals from.
 #' @eval param_series()
+#' @param serie_x,serie_y Variables to chose for x and y axis in
+#'  \code{ggvar_ccf_ind}.
 #' @param type The type of ACF to be computed, passed to \link[stats]{acf}. Can
 #'  be either "correlation", "covariance", or "partial".
 #' @param lag.max The number of lags used to calculate the ACF, passed to
@@ -67,7 +69,7 @@ data_ggvar_ccf <- function(x, serie_x, serie_y, ...) {
 #'
 #' @examples
 #' ggvar_acf(freeny[-2], args_facet = list(scales = "free_y"))
-#' ggvar_ccf(freeny[-2], args_facet = list(scales = "free_y"))
+#' ggvar_ccf_grid(freeny[-2], args_facet = list(scales = "free_y"))
 #' ggvar_acf(vars::VAR(freeny[-2]), args_facet = list(scales = "free_y"))
 #'
 #' @export
@@ -195,11 +197,11 @@ ggvar_ccf_grid <- function(
 ggvar_ccf_ind <- function(x, serie_x, serie_y, ...) {
   data <- data_ggvar_ccf(x, serie_x, serie_y, ...)
 
-  ggplot(data, aes(x = lag, y = value)) +
+  ggplot(data, aes(x = .data$lag, y = .data$value)) +
     ggplot2::geom_vline(xintercept = 0, color = "grey") +
     ggplot2::geom_hline(yintercept = 0) +
-    ggplot2::geom_segment(aes(xend = lag, yend = 0)) +
-    ggplot2::geom_ribbon(aes(ymin = -ci, ymax = ci), fill = NA) +
+    ggplot2::geom_segment(aes(xend = .data$lag, yend = 0)) +
+    ggplot2::geom_ribbon(aes(ymin = -.data$ci, ymax = .data$ci), fill = NA) +
     ggplot2::labs(
       title = paste("Cross correlation of", serie_x, "and", serie_y),
       y = "Value", x = "Lag"
@@ -209,15 +211,15 @@ ggvar_ccf_ind <- function(x, serie_x, serie_y, ...) {
 
 #' @rdname ggvar_acf
 #' @export
-ggvar_ccf_wrap <- function(x, cols, ...) {
-  combs <- asplit(combn(cols, 2), 2)
+ggvar_ccf_wrap <- function(x, series, ...) {
+  combs <- asplit(utils::combn(series, 2), 2)
   data <- purrr::map_dfr(combs, \(l) data_ggvar_ccf(x, l[1], l[2]), ...)
 
-  ggplot(data, aes(x = lag, y = value)) +
+  ggplot(data, aes(x = .data$lag, y = .data$value)) +
     ggplot2::geom_vline(xintercept = 0, color = "grey") +
     ggplot2::geom_hline(yintercept = 0) +
-    ggplot2::geom_segment(aes(xend = lag, yend = 0)) +
-    ggplot2::geom_ribbon(aes(ymin = -ci, ymax = ci), fill = NA) +
-    ggplot2::facet_wrap(vars(series)) +
+    ggplot2::geom_segment(aes(xend = .data$lag, yend = 0)) +
+    ggplot2::geom_ribbon(aes(ymin = -.data$ci, ymax = .data$ci), fill = NA) +
+    ggplot2::facet_wrap(vars(.data$series)) +
     ggplot2::labs(y = "Cross correlation of variables", x = "Lag")
 }
