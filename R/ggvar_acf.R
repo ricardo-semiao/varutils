@@ -27,6 +27,20 @@ setup_ggvar_acf <- function(x, series, ci, type, lag.max, geom, facet = NULL) {
   )
 }
 
+#' @noRd
+data_ggvar_ccf <- function(x, serie_x, serie_y, ...) {
+  ci <- qnorm((1 - 0.95) / 2) / sqrt(nrow(x))
+  temp_ccf <- ccf(x[[serie_x]], x[[serie_y]], plot = FALSE, ...)
+
+  tibble::tibble(
+    series = paste0(serie_x, " - ", serie_y),
+    lag = temp_ccf$lag[,,1],
+    value = temp_ccf$acf[,,1],
+    ci = ci
+  )
+}
+
+
 #' Plot autocorrelation (and similars) of dataset
 #'
 #' \code{ggvar_acf} plots the result of a \link[stats]{acf} call for every
@@ -62,7 +76,7 @@ ggvar_acf <- function(
     type = "correlation", lag.max = NULL, ci = 0.95, ...,
     geom = "segment",
     args_geom = list(),
-    args_ribbon = list(linetype = 2, color = "blue"),
+    args_ribbon = list(linetype = 2, color = "blue", fill = NA),
     args_hline = list(),
     args_facet = list()) {
   # Setup:
@@ -118,12 +132,12 @@ ggvar_acf <- function(
 
 #' @rdname ggvar_acf
 #' @export
-ggvar_ccf <- function(
+ggvar_ccf_grid <- function(
     x, series = NULL,
     type = "correlation", lag.max = NULL, ci = 0.95, ...,
     geom = "segment", facet = "ggplot",
     args_geom = list(),
-    args_ribbon = list(linetype = 2, color = "blue", fill = "gray"),
+    args_ribbon = list(linetype = 2, color = "blue", fill = NA),
     args_hline = list(),
     args_facet = list()) {
   # Setup:
@@ -144,7 +158,7 @@ ggvar_ccf <- function(
     purrr::pluck("acf") %>%
     purrr::array_tree(3) %>%
     purrr::map2_dfr(series, ~ data.frame(.y, setup$lag.min:lag.max, .x)) %>%
-    stats::setNames(c("var_row", "lag", series)) %>%
+    purrr::set_names(c("var_row", "lag", series)) %>%
     tidyr::pivot_longer(dplyr::all_of(series),
       names_to = "var_col",
       values_to = "value"
@@ -173,4 +187,37 @@ ggvar_ccf <- function(
     ggplot_add +
     inject(ggplot2::geom_hline(yintercept = 0, !!!args_hline)) +
     ggplot2::labs(title = title, x = "Lags", y = "Values")
+}
+
+
+#' @rdname ggvar_acf
+#' @export
+ggvar_ccf_ind <- function(x, serie_x, serie_y, ...) {
+  data <- data_ggvar_ccf(x, serie_x, serie_y, ...)
+
+  ggplot(data, aes(x = lag, y = value)) +
+    ggplot2::geom_vline(xintercept = 0, color = "grey") +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::geom_segment(aes(xend = lag, yend = 0)) +
+    ggplot2::geom_ribbon(aes(ymin = -ci, ymax = ci), fill = NA) +
+    ggplot2::labs(
+      title = paste("Cross correlation of", serie_x, "and", serie_y),
+      y = "Value", x = "Lag"
+    )
+}
+
+
+#' @rdname ggvar_acf
+#' @export
+ggvar_ccf_wrap <- function(x, cols, ...) {
+  combs <- asplit(combn(cols, 2), 2)
+  data <- purrr::map_dfr(combs, \(l) data_ggvar_ccf(x, l[1], l[2]), ...)
+
+  ggplot(data, aes(x = lag, y = value)) +
+    ggplot2::geom_vline(xintercept = 0, color = "grey") +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::geom_segment(aes(xend = lag, yend = 0)) +
+    ggplot2::geom_ribbon(aes(ymin = -ci, ymax = ci), fill = NA) +
+    ggplot2::facet_wrap(vars(series)) +
+    ggplot2::labs(y = "Cross correlation of variables", x = "Lag")
 }

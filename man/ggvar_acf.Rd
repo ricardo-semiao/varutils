@@ -2,7 +2,9 @@
 % Please edit documentation in R/ggvar_acf.R
 \name{ggvar_acf}
 \alias{ggvar_acf}
-\alias{ggvar_ccf}
+\alias{ggvar_ccf_grid}
+\alias{ggvar_ccf_ind}
+\alias{ggvar_ccf_wrap}
 \title{Plot autocorrelation (and similars) of dataset}
 \usage{
 ggvar_acf(
@@ -14,12 +16,12 @@ ggvar_acf(
   ...,
   geom = "segment",
   args_geom = list(),
-  args_ribbon = list(linetype = 2, color = "blue"),
+  args_ribbon = list(linetype = 2, color = "blue", fill = NA),
   args_hline = list(),
   args_facet = list()
 )
 
-ggvar_ccf(
+ggvar_ccf_grid(
   x,
   series = NULL,
   type = "correlation",
@@ -29,10 +31,14 @@ ggvar_ccf(
   geom = "segment",
   facet = "ggplot",
   args_geom = list(),
-  args_ribbon = list(linetype = 2, color = "blue", fill = "gray"),
+  args_ribbon = list(linetype = 2, color = "blue", fill = NA),
   args_hline = list(),
   args_facet = list()
 )
+
+ggvar_ccf_ind(x, serie_x, serie_y, ...)
+
+ggvar_ccf_wrap(x, cols, ...)
 }
 \arguments{
 \item{x}{A dataset (object coercible to data.frame) or a "varest" object to

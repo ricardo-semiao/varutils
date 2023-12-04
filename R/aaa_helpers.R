@@ -65,14 +65,14 @@ get_pallete <- function(palette, n, ...) {
 
 
 # Ggplot helpers ----------------------------------------------------------
-create_sec_axis <- function() {
+create_sec_axis <- function(xseclab = "Impulse", yseclab = "Response") {
   my_sec_axis <- function(name) {
     ggplot2::sec_axis(~., name = name, breaks = NULL, labels = NULL)
   }
 
   list(
-    ggplot2::scale_x_continuous(sec.axis = my_sec_axis("Impulse")),
-    ggplot2::scale_y_continuous(sec.axis = my_sec_axis("Response")),
+    ggplot2::scale_x_continuous(sec.axis = my_sec_axis(xseclab)),
+    ggplot2::scale_y_continuous(sec.axis = my_sec_axis(yseclab)),
     ggplot2::theme(
       axis.title.x.top = ggplot2::element_text(vjust = 1.5),
       axis.title.y.right = ggplot2::element_text(vjust = 1.5)

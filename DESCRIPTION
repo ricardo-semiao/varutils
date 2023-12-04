@@ -1,7 +1,7 @@
 Type: Package
 Package: varutils
 Title: Utility Functions for VAR Analisys
-Version: 0.1.0
+Version: 0.0.0.9000
 Authors@R: 
     person("Ricardo", "Semião", , "ricardo.semiao@outlook.com", role = c("aut", "cre"))
 Maintainer: Ricardo Semião e Castro <ricardo.semiao@outlook.com>

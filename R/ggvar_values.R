@@ -6,17 +6,20 @@ setup_ggvar_values <- function(x, series, index) {
 
   # Create values:
   if (inherits(x, "varest")) {
-    title <- "VAR Residuals Distribution"
+    title <- "VAR Residuals Historic Values"
+    index <- index %||% (x$p + 1):x$totobs
     x <- as.data.frame(stats::residuals(x))
+
   } else {
-    title <- "Time Series Distribution"
+    title <- "Time Series Historic Values"
     x <- as.data.frame(x)
+    index <- index %||% seq_len(nrow(x))
   }
 
   list(
     x = x,
     series = series %||% get_names(x),
-    index = index %||% seq_len(nrow(x)),
+    index = index,
     title = title
   )
 }
