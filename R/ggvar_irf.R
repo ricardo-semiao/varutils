@@ -102,3 +102,50 @@ ggvar_irf <- function(
       x = "Forecast horizon", y = "Effect"
     )
 }
+
+#' @noRd
+ggvar_irf_ind <- function(
+    x, series_impulse, series_response, n.ahead = NULL,
+    ci = 0.95, ...,
+    facet = "ggplot",
+    args_line = list(),
+    args_hline = list(),
+    args_ribbon = list(fill = NA, linetype = 2, color = "blue"),
+    args_facet = list()) {
+  # Setup:
+  setup <- setup_ggvar_irf(
+    x, n.ahead, series_impulse, series_response, ci, facet
+  )
+  reassign <- c("series_impulse", "series_impulse")
+  list2env(setup[reassign], envir = rlang::current_env())
+
+  # Data:
+  irf <- if (inherits(x, "varest")) {
+    vars::irf(x, series_impulse, series_response, n.ahead,
+              boot = !isFALSE(ci), ci = ci, ...
+    )
+  } else {
+    x
+  }
+
+  data <- purrr::map_dfc(irf[1:3], ~ .x[[series_response]][,series_impulse]) %>%
+    dplyr::mutate(horizon = 1:nrow(.))
+
+  # Graph:
+  ggplot_add <- list(
+    if (!isFALSE(ci)) {
+      inject(ggplot2::geom_ribbon(aes(ymin = .data$Lower, ymax = .data$Upper),
+                                  !!!args_ribbon
+      ))
+    }
+  )
+
+  ggplot(data, aes(.data$lead, .data$irf)) +
+    ggplot_add +
+    inject(ggplot2::geom_line(!!!args_line)) +
+    inject(ggplot2::geom_hline(yintercept = 0, !!!args_hline)) +
+    ggplot2::labs(
+      title = "VAR Impulse Response Functions",
+      x = "Forecast horizon", y = "Effect"
+    )
+}
