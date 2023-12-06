@@ -78,11 +78,15 @@
 <!-- badges: start -->
 
 <p>The varutils R package is being developed to provide general utility functions for projects involving Vector Auto-Regressive models, with specifically the <a href="https://cran.r-project.org/web/packages/vars/index.html" class="external-link">vars package</a>.</p>
-<p>Mainly, the functions retrieve results from <em>vars</em> objects, manipulate them with <a href="https://www.tidyverse.org/" class="external-link">tidyverse</a>, and plot commonly needed ggplot graphs, in the realm of IRF’s, FEVD’s, predict graphs, VAR series and residual analysis.</p>
-<p>In the future, I intent to add functions for quick (not thorough) analysis and retrieval of trends, seasonality, and structural breaks, using common methods and statistical tests. Additionally, I want to expand the package to other VAR-like objects.</p>
 <p><strong>Disclaimer:</strong> this package is in the early most stage of life. It hasn’t been thoroughly tested and can present several bugs. I don’t recommend using it for large-scale projects, yet.</p>
 <p>Please report any problems in my email (below) or as a github issue. Thank you!</p>
 <p>Author: Ricardo Semião e Castro (<a href="mailto:ricardo.semiao@outlook" class="email">ricardo.semiao@outlook</a>).</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Mainly, the functions retrieve results from <em>vars</em> objects, manipulate them with <a href="https://www.tidyverse.org/" class="external-link">tidyverse</a>, and plot commonly needed ggplot graphs, in the realm of IRF’s, FEVD’s, predict graphs, VAR series and residual analysis.</p>
+<p>In the future, I intent to add functions for quick (not thorough) analysis and retrieval of trends, seasonality, and structural breaks, using common methods and statistical tests. Additionally, I want to expand the package to other VAR-like objects.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -95,18 +99,39 @@
 <h2 id="upcoming-changes">Upcoming changes<a class="anchor" aria-label="anchor" href="#upcoming-changes"></a>
 </h2>
 <ul>
-<li>Rethink how to pass the large number of arguments to ggplot.</li>
+<li>Start using rlang and glue APIs wherever possible.
+<ul>
+<li>Specially in the “setup” suite, as in the <a href="https://ricardo-semiao.github.io/vardiff/" class="external-link">vardiff</a> package.</li>
+</ul>
+</li>
 <li>More thorough tests:
 <ul>
-<li>What errors to expect in <code>expect_error</code> calls.</li>
+<li>Specify hat errors to expect in <code>expect_error</code> calls.</li>
 <li>Directly test for elements of the ggplots returned by functions.</li>
 <li>More tests specifically for <code>test_fun()</code>.</li>
 <li>Add tests for “helper” and “setup” functions.</li>
+<li>Rethink the <code>test</code> functions list scheme.</li>
 </ul>
 </li>
-<li>Rethink the <code>test</code> functions list scheme and start using rlang errors.</li>
-<li>Add more info/sections to functions documentation.</li>
-<li>See about solving some less important <a href="https://lintr.r-lib.org/" class="external-link">lintr</a> notes.</li>
+<li>Rethink some naming conventions:
+<ul>
+<li>Change “args_…” to “…_args” in arguments names</li>
+<li>Change “serie(s)” naming to “var(s)” or “col(s)”</li>
+<li>Change names of internal faceting variables</li>
+</ul>
+</li>
+<li>Give more info in help pages:
+<ul>
+<li>Give hints on how to work with results.</li>
+<li>Direct to used methods like “see: ?vars:::predict”.</li>
+</ul>
+</li>
+</ul>
+<p>Additional:</p>
+<ul>
+<li>Add package data and custom examples</li>
+<li>Solve some less important lintr notes.</li>
+<li>Study importing whole rlang and ggplot2.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -158,8 +183,9 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://CRAN.R-project.org/package=varutils" class="external-link"><img src="https://www.r-pkg.org/badges/version/varutils" alt="CRAN status"></a></li>
+<li><a href="https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ricardo-semiao/varutils/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
